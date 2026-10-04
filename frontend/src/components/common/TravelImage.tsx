@@ -5,7 +5,8 @@ type TravelImageProps = { src: string; alt: string; className?: string; imageCla
 
 export function TravelImage({ src, alt, className = '', imageClassName = '', loading = 'lazy' }: TravelImageProps) {
   const [failed, setFailed] = useState(false)
-  return <div className={`relative overflow-hidden bg-[#182536] ${className}`}>
+  const positionClass = className.split(/\s+/).includes('absolute') ? '' : 'relative'
+  return <div className={`${positionClass} overflow-hidden bg-[#182536] ${className}`}>
     {!failed ? <img src={src} alt={alt} loading={loading} onError={() => setFailed(true)} className={`size-full object-cover ${imageClassName}`} /> : <div role="img" aria-label={alt} className="grid size-full place-items-center bg-[radial-gradient(ellipse_at_70%_20%,#35516b,#142237_55%,#101827)] text-white/40"><ImageOff size={24} aria-hidden="true" /></div>}
   </div>
 }

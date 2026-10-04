@@ -1,11 +1,54 @@
 export type Destination = {
+  id?: string
   name: string
   region: string
   note: string
   image: string
   alt: string
   tag?: string
+  city?: string
+  state?: string
+  country?: string
+  description?: string
+  shortDescription?: string
+  category?: DestinationCategory
+  tags?: string[]
+  featured?: boolean
+  rating?: number
+  bestTime?: string
+  estimatedDays?: number
 }
+
+export type DestinationCategory = 'Beaches' | 'Mountains' | 'Adventure' | 'Heritage' | 'Nature' | 'Spiritual' | 'Food & Culture' | 'Luxury' | 'Wildlife'
+export type IndiaRegion = 'North India' | 'South India' | 'West India' | 'East India' | 'Northeast India' | 'Central India'
+export type ExploreDestination = Destination & { id: string; city: string; state: string; country: string; description: string; shortDescription: string; category: DestinationCategory; tags: string[]; featured: boolean; rating: number; bestTime: string; estimatedDays: number; indiaRegion: IndiaRegion }
+
+const makeDestination = (id: string, name: string, city: string, state: string, indiaRegion: IndiaRegion, category: DestinationCategory, image: string, shortDescription: string, tags: string[], rating = 4.8): ExploreDestination => ({ id, name, city, state, indiaRegion, country: 'India', description: shortDescription, shortDescription, category, tags, image: `/images/${image}.svg`, alt: `${name}, ${state} — illustrated destination scene`, note: `${category} · 4–6 days`, region: state, tag: tags[0], featured: id === 'kerala', rating, bestTime: 'October – March', estimatedDays: 5 })
+
+export const exploreDestinations: ExploreDestination[] = [
+  makeDestination('goa','Goa','Panaji','Goa','West India','Beaches','goa','Golden beaches, Portuguese lanes and unhurried coastal evenings.',['beach','coast','food']),
+  makeDestination('kerala','Kerala','Alappuzha','Kerala','South India','Nature','kerala','Drift through palm-fringed backwaters and green hill country.',['backwaters','nature','food','culture'],4.9),
+  makeDestination('manali','Manali','Manali','Himachal Pradesh','North India','Mountains','manali','A mountain town for pine-scented walks and Himalayan views.',['himalaya','snow','adventure']),
+  makeDestination('kashmir','Kashmir','Srinagar','Jammu and Kashmir','North India','Mountains','kashmir','Quiet lakes, alpine valleys and memorable mountain light.',['lake','himalaya','nature']),
+  makeDestination('jaipur','Jaipur','Jaipur','Rajasthan','West India','Heritage','jaipur','Rose-colored facades, lively bazaars and storied forts.',['forts','culture','food']),
+  makeDestination('udaipur','Udaipur','Udaipur','Rajasthan','West India','Luxury','udaipur','Lakeside palaces and old-city lanes made for slow exploration.',['lakes','heritage','luxury']),
+  makeDestination('rishikesh','Rishikesh','Rishikesh','Uttarakhand','North India','Spiritual','spiritual','Riverfront ashrams, forest trails and a calmer pace by the Ganges.',['yoga','river','adventure']),
+  makeDestination('andaman','Andaman Islands','Port Blair','Andaman and Nicobar Islands','East India','Beaches','andaman','Clear island waters, coral reefs and quiet tropical shores.',['islands','snorkeling','beach']),
+  makeDestination('ooty','Ooty','Ooty','Tamil Nadu','South India','Nature','kerala','Cool air, tea gardens and winding paths in the Nilgiris.',['tea','hills','nature']),
+  makeDestination('munnar','Munnar','Munnar','Kerala','South India','Mountains','kerala','Rolling tea estates and misty highland trails.',['tea','hills','nature']),
+  makeDestination('hyderabad','Hyderabad','Hyderabad','Telangana','South India','Food & Culture','jaipur','A layered city known for historic landmarks and legendary biryani.',['food','heritage','city']),
+  makeDestination('mumbai','Mumbai','Mumbai','Maharashtra','West India','Food & Culture','goa','A magnetic coastal city with art deco streets and a vibrant food scene.',['food','coast','city']),
+  makeDestination('delhi','Delhi','New Delhi','Delhi','North India','Heritage','jaipur','Centuries of history meet grand boulevards and energetic markets.',['history','food','culture']),
+  makeDestination('agra','Agra','Agra','Uttar Pradesh','North India','Heritage','udaipur','Mughal-era architecture and one of the world’s most iconic monuments.',['history','architecture','culture']),
+  makeDestination('varanasi','Varanasi','Varanasi','Uttar Pradesh','North India','Spiritual','spiritual','Rituals and everyday life unfold along the ancient riverfront ghats.',['river','temples','culture']),
+  makeDestination('coorg','Coorg','Madikeri','Karnataka','South India','Nature','kerala','Coffee country with forest walks, waterfalls and homestays.',['coffee','forest','nature']),
+  makeDestination('darjeeling','Darjeeling','Darjeeling','West Bengal','East India','Mountains','manali','Tea gardens and sunrise views across the high Himalaya.',['tea','himalaya','nature']),
+  makeDestination('pondicherry','Pondicherry','Puducherry','Puducherry','South India','Beaches','goa','Seaside promenades and pastel streets with a distinct Franco-Tamil character.',['coast','heritage','food']),
+  makeDestination('amritsar','Amritsar','Amritsar','Punjab','North India','Spiritual','spiritual','A warm, welcoming city centered on a luminous sacred complex.',['temples','food','culture']),
+  makeDestination('jaisalmer','Jaisalmer','Jaisalmer','Rajasthan','West India','Adventure','jaipur','Golden sandstone lanes at the edge of the Thar Desert.',['desert','forts','adventure']),
+  makeDestination('kaziranga','Kaziranga','Kaziranga','Assam','Northeast India','Wildlife','wildlife','Grasslands, wetlands and a chance to spot the one-horned rhinoceros.',['safari','wildlife','nature']),
+  makeDestination('khajuraho','Khajuraho','Khajuraho','Madhya Pradesh','Central India','Heritage','jaipur','Intricately carved temples set among quiet central Indian landscapes.',['temples','architecture','heritage']),
+]
 
 export const trendingDestinations: Destination[] = [
   { name: 'Goa', region: 'Western India', note: 'Sunlit shores · 4–6 days', image: '/images/goa.svg', alt: 'Illustrated palms beside the sunset coast of Goa', tag: 'Coastal escape' },
