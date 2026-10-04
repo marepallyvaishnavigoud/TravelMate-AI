@@ -1,0 +1,9 @@
+import { Link } from 'react-router-dom'
+import { ArrowRight, Compass, UserRound } from 'lucide-react'
+import { Container } from '../../components/ui/Container'
+import { useAuth } from '../../context/AuthContext'
+
+export function Dashboard() {
+  const { user } = useAuth()
+  return <Container className="py-12 sm:py-16"><div className="mx-auto max-w-5xl"><p className="text-xs font-semibold uppercase tracking-[.2em] text-cyan-200">Your TravelMate</p><h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">Welcome, {user?.firstName}.</h1><p className="mt-2 text-sm text-slate-400">Your personal travel space is ready.</p><div className="mt-8 grid gap-4 sm:grid-cols-2"><Link to="/explore" className="group rounded-2xl border border-white/[0.08] bg-[#0B1120] p-6 transition hover:border-cyan-200/30"><span className="grid size-10 place-items-center rounded-xl bg-cyan-200/10 text-cyan-200"><Compass size={19}/></span><h2 className="mt-5 text-lg font-semibold text-white">Explore destinations</h2><p className="mt-2 text-sm text-slate-400">Find inspiration for where to go next.</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-cyan-200">Explore <ArrowRight size={14} className="transition-transform group-hover:translate-x-1"/></span></Link><Link to="/profile" className="group rounded-2xl border border-white/[0.08] bg-[#0B1120] p-6 transition hover:border-cyan-200/30"><span className="grid size-10 place-items-center rounded-xl bg-indigo-200/10 text-indigo-200"><UserRound size={19}/></span><h2 className="mt-5 text-lg font-semibold text-white">Your profile</h2><p className="mt-2 text-sm text-slate-400">Review your account information.</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-cyan-200">View profile <ArrowRight size={14} className="transition-transform group-hover:translate-x-1"/></span></Link></div></div></Container>
+}
