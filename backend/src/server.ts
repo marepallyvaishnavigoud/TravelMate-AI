@@ -2,7 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
-import { connectDatabase, isDatabaseConnected } from './config/database.js'
+import { connectDatabase, disconnectDatabase, isDatabaseConnected } from './config/database.js'
 import { authRoutes } from './routes/authRoutes.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { isJwtConfigured } from './utils/jwt.js'
@@ -17,20 +17,26 @@ app.use(cors({ origin: clientUrl, methods: ['GET','POST','OPTIONS'], allowedHead
 app.use(express.json({ limit: '10kb' }))
 
 app.get('/api/health', (_request, response) => {
-  response.json({ success: true, message: 'TravelMate AI API is running', data: { database: isDatabaseConnected() ? 'connected' : 'disconnected' } })
+  const connected = isDatabaseConnected()
+  response.status(connected ? 200 : 503).json({ success: connected, message: connected ? 'TravelMate AI API is running' : 'TravelMate AI API database is unavailable', database: connected ? 'connected' : 'disconnected' })
 })
 app.use('/api/auth', authRoutes)
 app.use('/api', (_request, response) => response.status(404).json({ success: false, message: 'API route not found.' }))
 app.use(errorHandler)
 
-const server = app.listen(port, () => {
-  console.info(`TravelMate AI API listening on http://localhost:${port}`)
+async function startServer(): Promise<void> {
+  try {
+    await connectDatabase()
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : 'MongoDB connection failed. The API was not started.')
+    process.exitCode = 1
+    return
+  }
   if (!isJwtConfigured()) console.error('JWT_SECRET is missing or too short. Set a value of at least 32 characters in backend/.env before enabling authentication.')
-  void connectDatabase().then(() => console.info('MongoDB connected.')).catch((error: unknown) => {
-    console.error(error instanceof Error ? error.message : 'MongoDB connection failed.')
-  })
-})
-
-for (const signal of ['SIGINT','SIGTERM'] as const) {
-  process.on(signal, () => server.close(() => process.exit(0)))
+  const server = app.listen(port, () => console.info(`TravelMate AI API listening on http://localhost:${port}`))
+  for (const signal of ['SIGINT','SIGTERM'] as const) {
+    process.once(signal, () => server.close(() => { void disconnectDatabase().catch(() => console.error('MongoDB disconnect failed.')).finally(() => process.exit(0)) }))
+  }
 }
+
+void startServer()

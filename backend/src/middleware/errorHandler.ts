@@ -20,6 +20,6 @@ export const errorHandler: ErrorRequestHandler = (error: unknown, _request, resp
     response.status(409).json({ success: false, message: 'An account with this email already exists.' })
     return
   }
-  const message = process.env.NODE_ENV === 'production' ? 'An unexpected server error occurred.' : error instanceof Error ? error.message : 'An unexpected server error occurred.'
-  response.status(500).json({ success: false, message })
+  console.error('Unhandled API error.', error instanceof Error ? error.name : 'Unknown error')
+  response.status(500).json({ success: false, message: 'An unexpected server error occurred.' })
 }
