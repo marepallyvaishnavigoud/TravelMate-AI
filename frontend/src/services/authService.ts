@@ -8,7 +8,7 @@ type ApiErrorResponse = { success?: false; message?: string; errors?: Array<{ fi
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 const TOKEN_KEY = 'travelmate.auth.token'
-const api = axios.create({ baseURL: API_URL, headers: { 'Content-Type': 'application/json' }, timeout: 12000 })
+export const api = axios.create({ baseURL: API_URL, headers: { 'Content-Type': 'application/json' }, timeout: 12000 })
 
 function readToken(): string | null {
   return typeof window === 'undefined' ? null : window.localStorage.getItem(TOKEN_KEY)
@@ -55,11 +55,14 @@ export const authService = {
   login(email: string, password: string) { return authenticate('/auth/login', { email, password }) },
   register(input: RegisterInput) { return authenticate('/auth/register', input) },
   async getCurrentUser(): Promise<AuthUser> {
+    const tokenUsedForRequest = readToken()
     try {
       const { data } = await api.get<MeResponse>('/auth/me')
+      if (readToken() !== tokenUsedForRequest) throw new Error('Your session changed while your account was loading.')
       return data.data.user
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) clearToken()
+      // A delayed response for an older session must never erase a newer login.
+      if (axios.isAxiosError(error) && error.response?.status === 401 && readToken() === tokenUsedForRequest) clearToken()
       throw error
     }
   },

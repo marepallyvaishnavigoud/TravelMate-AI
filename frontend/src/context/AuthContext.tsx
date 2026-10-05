@@ -10,7 +10,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let active = true
     if (!authService.hasSession()) { setLoading(false); return () => { active = false } }
-    authService.getCurrentUser().then((currentUser) => { if (active) setUser(currentUser) }).catch(() => { if (active) setUser(null) }).finally(() => { if (active) setLoading(false) })
+    authService.getCurrentUser().then((currentUser) => { if (active) setUser(currentUser) }).catch(() => { if (active && !authService.hasSession()) setUser(null) }).finally(() => { if (active) setLoading(false) })
     return () => { active = false }
   }, [])
   const value = useMemo<AuthContextValue>(() => ({

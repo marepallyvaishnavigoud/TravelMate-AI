@@ -4,6 +4,8 @@ import cors from 'cors'
 import helmet from 'helmet'
 import { connectDatabase, disconnectDatabase, isDatabaseConnected } from './config/database.js'
 import { authRoutes } from './routes/authRoutes.js'
+import { savedDestinationRoutes } from './routes/savedDestinationRoutes.js'
+import { dashboardRoutes } from './routes/dashboardRoutes.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { isJwtConfigured } from './utils/jwt.js'
 
@@ -13,7 +15,7 @@ const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
 
 app.disable('x-powered-by')
 app.use(helmet())
-app.use(cors({ origin: clientUrl, methods: ['GET','POST','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }))
+app.use(cors({ origin: clientUrl, methods: ['GET','POST','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }))
 app.use(express.json({ limit: '10kb' }))
 
 app.get('/api/health', (_request, response) => {
@@ -21,6 +23,8 @@ app.get('/api/health', (_request, response) => {
   response.status(connected ? 200 : 503).json({ success: connected, message: connected ? 'TravelMate AI API is running' : 'TravelMate AI API database is unavailable', database: connected ? 'connected' : 'disconnected' })
 })
 app.use('/api/auth', authRoutes)
+app.use('/api/saved-destinations', savedDestinationRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 app.use('/api', (_request, response) => response.status(404).json({ success: false, message: 'API route not found.' }))
 app.use(errorHandler)
 

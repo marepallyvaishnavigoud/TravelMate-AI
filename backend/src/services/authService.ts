@@ -34,7 +34,9 @@ export async function registerUser(input: RegisterInput): Promise<AuthResult> {
 
 export async function loginUser(input: LoginInput): Promise<AuthResult> {
   requireDatabase()
-  const user = await User.findOne({ email: input.email }).select('+password')
+  // tokenVersion is select:false in the model, but it must be present in the
+  // JWT so authMiddleware can validate sessions after login.
+  const user = await User.findOne({ email: input.email }).select('+password +tokenVersion')
   let passwordMatches = false
   if (user) passwordMatches = await bcrypt.compare(input.password, user.password)
   else await bcrypt.hash(input.password, 12)
