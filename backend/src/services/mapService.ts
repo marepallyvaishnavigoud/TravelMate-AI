@@ -1,0 +1,61 @@
+import { AppError } from '../utils/AppError.js'
+
+export type RouteCoordinate = { latitude: number; longitude: number }
+export type RouteGeometry = { type: 'LineString'; coordinates: [number, number][] }
+
+type GeocodingFeature = { place_name?: string; center?: [number, number] }
+type DirectionsRoute = { distance?: number; duration?: number; geometry?: RouteGeometry }
+
+function accessToken(): string {
+  const token = process.env.MAPBOX_ACCESS_TOKEN
+  if (!token) {
+    if (process.env.NODE_ENV !== 'production') console.warn('[mapService] MAPBOX_ACCESS_TOKEN is not configured.')
+    throw new AppError(503, 'Route calculation is not configured. Please try again later.')
+  }
+  return token
+}
+
+async function providerJson<T>(url: URL, stage: string): Promise<T> {
+  let response: Response
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(12000) })
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') console.warn('[mapService] Mapbox request could not be reached.', { stage, errorName: error instanceof Error ? error.name : 'UnknownError' })
+    throw new AppError(502, 'The map service could not be reached. Please try again.')
+  }
+  if (!response.ok) {
+    if (process.env.NODE_ENV !== 'production') console.warn('[mapService] Mapbox returned an unsuccessful response.', { stage, status: response.status })
+    throw new AppError(502, 'The map service could not calculate this route. Check the locations and try again.')
+  }
+  try { return await response.json() as T }
+  catch {
+    if (process.env.NODE_ENV !== 'production') console.warn('[mapService] Mapbox returned invalid JSON.', { stage, status: response.status })
+    throw new AppError(502, 'The map service returned an invalid response.')
+  }
+}
+
+export async function geocodeLocation(name: string, stage: 'origin' | 'destination'): Promise<{ name: string } & RouteCoordinate> {
+  const url = new URL(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(name)}.json`)
+  url.searchParams.set('access_token', accessToken())
+  url.searchParams.set('limit', '1')
+  url.searchParams.set('types', 'place,locality,region,address')
+  const result = await providerJson<{ features?: GeocodingFeature[] }>(url, `geocoding-${stage}`)
+  const feature = result.features?.[0]
+  if (!feature?.center || feature.center.length < 2) throw new AppError(422, `Unable to find ${name}. Check the location and try again.`)
+  const [longitude, latitude] = feature.center
+  return { name: feature.place_name || name, latitude, longitude }
+}
+
+export async function getDrivingDirections(origin: RouteCoordinate, destination: RouteCoordinate) {
+  const coordinates = `${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}`
+  const url = new URL(`https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`)
+  url.searchParams.set('access_token', accessToken())
+  url.searchParams.set('geometries', 'geojson')
+  url.searchParams.set('overview', 'full')
+  const result = await providerJson<{ routes?: DirectionsRoute[] }>(url, 'directions')
+  const route = result.routes?.[0]
+  if (!route || typeof route.distance !== 'number' || typeof route.duration !== 'number' || !route.geometry?.coordinates?.length) {
+    throw new AppError(422, 'A driving route could not be found for these locations.')
+  }
+  return { distanceKm: route.distance / 1000, durationMinutes: route.duration / 60, geometry: route.geometry }
+}

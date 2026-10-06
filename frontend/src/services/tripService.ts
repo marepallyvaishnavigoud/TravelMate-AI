@@ -18,6 +18,15 @@ export type Trip = {
   updatedAt: string
 }
 export type TripInput = Omit<Trip, '_id' | 'status' | 'createdAt' | 'updatedAt'>
+export type TripRoute = {
+  supported: true
+  origin: { name: string; latitude: number; longitude: number }
+  destination: { name: string; latitude: number; longitude: number }
+  distanceKm: number
+  durationMinutes: number
+  geometry: { type: 'LineString'; coordinates: [number, number][] }
+  travelMode: 'driving'
+} | { supported: false; message: string }
 
 export const tripService = {
   async createTrip(input: TripInput): Promise<Trip> {
@@ -38,5 +47,9 @@ export const tripService = {
   },
   async deleteTrip(id: string): Promise<void> {
     await api.delete(`/trips/${encodeURIComponent(id)}`)
+  },
+  async getTripRoute(id: string): Promise<TripRoute> {
+    const { data } = await api.get<{ success: true; data: TripRoute }>(`/trips/${encodeURIComponent(id)}/route`)
+    return data.data
   },
 }

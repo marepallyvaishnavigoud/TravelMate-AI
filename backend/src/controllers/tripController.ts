@@ -2,6 +2,7 @@ import type { RequestHandler } from 'express'
 import { AppError } from '../utils/AppError.js'
 import { createTrip, deleteTrip, getTrip, listTrips, updateTrip } from '../services/tripService.js'
 import { tripSchema } from '../validators/tripValidators.js'
+import { getDrivingDirections, geocodeLocation } from '../services/mapService.js'
 
 function currentUserId(request: Parameters<RequestHandler>[0]): string {
   if (!request.authUser) throw new AppError(401, 'Authentication is required.')
@@ -27,6 +28,18 @@ export const listTripsController: RequestHandler = async (request, response) => 
 export const getTripController: RequestHandler = async (request, response) => {
   const trip = await getTrip(currentUserId(request), tripId(request))
   response.json({ success: true, data: { trip } })
+}
+
+export const getTripRouteController: RequestHandler = async (request, response) => {
+  const trip = await getTrip(currentUserId(request), tripId(request))
+  if (trip.transport !== 'car') {
+    response.json({ success: true, data: { supported: false, message: 'Road routing is currently available for car travel only.' } })
+    return
+  }
+  const origin = await geocodeLocation(trip.origin, 'origin')
+  const destination = await geocodeLocation(trip.destination, 'destination')
+  const route = await getDrivingDirections(origin, destination)
+  response.json({ success: true, data: { supported: true, origin, destination, ...route, travelMode: 'driving' } })
 }
 
 export const updateTripController: RequestHandler = async (request, response) => {
