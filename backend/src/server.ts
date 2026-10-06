@@ -7,6 +7,7 @@ import { authRoutes } from './routes/authRoutes.js'
 import { savedDestinationRoutes } from './routes/savedDestinationRoutes.js'
 import { dashboardRoutes } from './routes/dashboardRoutes.js'
 import { tripRoutes } from './routes/tripRoutes.js'
+import { placesRoutes } from './routes/placesRoutes.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { isJwtConfigured } from './utils/jwt.js'
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/saved-destinations', savedDestinationRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/trips', tripRoutes)
+app.use('/api/places', placesRoutes)
 app.use('/api', (_request, response) => response.status(404).json({ success: false, message: 'API route not found.' }))
 app.use(errorHandler)
 

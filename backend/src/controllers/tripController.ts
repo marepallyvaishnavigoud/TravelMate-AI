@@ -3,6 +3,8 @@ import { AppError } from '../utils/AppError.js'
 import { createTrip, deleteTrip, getTrip, listTrips, updateTrip } from '../services/tripService.js'
 import { tripSchema } from '../validators/tripValidators.js'
 import { getDrivingDirections, geocodeLocation } from '../services/mapService.js'
+import { searchPlacesAlongRoute } from '../services/places/placesService.js'
+import { tripStopsSchema } from '../validators/placeValidators.js'
 
 function currentUserId(request: Parameters<RequestHandler>[0]): string {
   if (!request.authUser) throw new AppError(401, 'Authentication is required.')
@@ -40,6 +42,23 @@ export const getTripRouteController: RequestHandler = async (request, response) 
   const destination = await geocodeLocation(trip.destination, 'destination')
   const route = await getDrivingDirections(origin, destination)
   response.json({ success: true, data: { supported: true, origin, destination, ...route, travelMode: 'driving' } })
+}
+
+export const getTripStopsController: RequestHandler = async (request, response) => {
+  const trip = await getTrip(currentUserId(request), tripId(request))
+  const { category } = tripStopsSchema.parse(request.query)
+  if (trip.transport !== 'car') {
+    response.json({ success: true, data: { places: [], source: 'Google Places', dataStatus: 'UNAVAILABLE', message: 'Smart Stops are currently available for car trips only.' } })
+    return
+  }
+  const origin = await geocodeLocation(trip.origin, 'origin')
+  const destination = await geocodeLocation(trip.destination, 'destination')
+  const route = await getDrivingDirections(origin, destination)
+  const result = await searchPlacesAlongRoute({
+    category,
+    routeCoordinates: route.geometry.coordinates,
+  })
+  response.json({ success: true, data: result })
 }
 
 export const updateTripController: RequestHandler = async (request, response) => {

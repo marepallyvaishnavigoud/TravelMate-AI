@@ -9,8 +9,8 @@ const links = [
   { label: 'Explore', href: '/explore' },
   { label: 'Destinations', href: '/explore#destinations' },
   { label: 'Plan a Trip', href: '/trip-planner' },
-  { label: 'Hotels', href: '/#planner' },
-  { label: 'Restaurants', href: '/#planner' },
+  { label: 'Hotels', href: '/hotels' },
+  { label: 'Restaurants', href: '/restaurants' },
 ]
 
 export function Navbar() {

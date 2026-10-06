@@ -13,12 +13,15 @@ import { Saved } from './pages/Saved/Saved'
 import { TripPlanner } from './pages/TripPlanner/TripPlanner'
 import { Trips } from './pages/Trips/Trips'
 import { TripDetails } from './pages/Trip/TripDetails'
+import { HotelsPage, RestaurantsPage } from './pages/Places/PlacesPages'
 
 function App() {
   return <AuthProvider><BrowserRouter><AppLayout><Routes>
     <Route path="/" element={<HomePage />} />
     <Route path="/explore" element={<Explore />} />
     <Route path="/destination/:id" element={<DestinationDetails />} />
+    <Route path="/hotels" element={<HotelsPage />} />
+    <Route path="/restaurants" element={<RestaurantsPage />} />
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

@@ -3,10 +3,10 @@ import { AppError } from '../utils/AppError.js'
 export type RouteCoordinate = { latitude: number; longitude: number }
 export type RouteGeometry = { type: 'LineString'; coordinates: [number, number][] }
 
-type GeocodingFeature = { place_name?: string; center?: [number, number] }
+type GeocodingFeature = { place_name?: string; center?: [number, number]; context?: Array<{ id?: string; short_code?: string }> }
 type DirectionsRoute = { distance?: number; duration?: number; geometry?: RouteGeometry }
 
-function accessToken(): string {
+export function getMapboxToken(): string {
   const token = process.env.MAPBOX_ACCESS_TOKEN
   if (!token) {
     if (process.env.NODE_ENV !== 'production') console.warn('[mapService] MAPBOX_ACCESS_TOKEN is not configured.')
@@ -34,22 +34,23 @@ async function providerJson<T>(url: URL, stage: string): Promise<T> {
   }
 }
 
-export async function geocodeLocation(name: string, stage: 'origin' | 'destination'): Promise<{ name: string } & RouteCoordinate> {
+export async function geocodeLocation(name: string, stage: 'origin' | 'destination' | 'places'): Promise<{ name: string; countryCode: string | null } & RouteCoordinate> {
   const url = new URL(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(name)}.json`)
-  url.searchParams.set('access_token', accessToken())
+  url.searchParams.set('access_token', getMapboxToken())
   url.searchParams.set('limit', '1')
   url.searchParams.set('types', 'place,locality,region,address')
   const result = await providerJson<{ features?: GeocodingFeature[] }>(url, `geocoding-${stage}`)
   const feature = result.features?.[0]
   if (!feature?.center || feature.center.length < 2) throw new AppError(422, `Unable to find ${name}. Check the location and try again.`)
   const [longitude, latitude] = feature.center
-  return { name: feature.place_name || name, latitude, longitude }
+  const countryCode = feature.context?.find((item) => item.id?.startsWith('country.'))?.short_code?.split('-').at(-1)?.toUpperCase() ?? null
+  return { name: feature.place_name || name, latitude, longitude, countryCode }
 }
 
 export async function getDrivingDirections(origin: RouteCoordinate, destination: RouteCoordinate) {
   const coordinates = `${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}`
   const url = new URL(`https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}`)
-  url.searchParams.set('access_token', accessToken())
+  url.searchParams.set('access_token', getMapboxToken())
   url.searchParams.set('geometries', 'geojson')
   url.searchParams.set('overview', 'full')
   const result = await providerJson<{ routes?: DirectionsRoute[] }>(url, 'directions')

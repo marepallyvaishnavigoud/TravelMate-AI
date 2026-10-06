@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
-import { ArrowLeft, CalendarDays, CarFront, Check, Clock3, Compass, MapPin, Plane, Sparkles, TrainFront, Trash2, Users, Utensils, Wallet, CloudSun, Hotel, Activity } from 'lucide-react'
+import { ArrowLeft, CalendarDays, CarFront, Check, Clock3, Compass, MapPin, Plane, Sparkles, TrainFront, Trash2, Users, Wallet, CloudSun, Activity } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Container } from '../../components/ui/Container'
 import { TripForm } from '../../components/trip/TripForm'
 import { authErrorMessage } from '../../services/authService'
 import { tripService, type Trip, type TripInput, type TripRoute } from '../../services/tripService'
 import { TripRouteMap } from '../../components/map/TripRouteMap'
+import { SmartStops } from '../../components/places/SmartStops'
 
 const transportIcons = { car: CarFront, bus: Activity, train: TrainFront, flight: Plane }
 const upcomingModules = [
-  { title: 'Hotels', description: 'Stay discovery is coming in a future update.', Icon: Hotel },
-  { title: 'Restaurants', description: 'Local dining recommendations are coming later.', Icon: Utensils },
   { title: 'Activities', description: 'Activity planning will be available in a future update.', Icon: Activity },
   { title: 'Expenses', description: 'Trip expense tracking is coming soon.', Icon: Wallet },
   { title: 'AI Itinerary', description: 'Personalized AI itinerary planning is not available yet.', Icon: Sparkles },
@@ -61,6 +60,7 @@ export function TripDetails() {
           { label: 'Estimated travel time', value: `${Math.floor(Math.round(route.durationMinutes) / 60)} hr ${Math.round(route.durationMinutes) % 60} min` },
         ].map(({ label, value }) => <div key={label} className="rounded-xl border border-white/[0.07] bg-[#070d19] p-4"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-sm font-medium text-white">{value}</p></div>)}</div><p className="mt-4 inline-flex items-center gap-2 text-sm text-slate-300"><CarFront size={16} className="text-cyan-200"/>Driving</p><div className="mt-4"><TripRouteMap route={route}/></div></>}
       </section>
+      <SmartStops tripId={id}/>
       <section className="mt-10"><div><p className="text-xs font-semibold uppercase tracking-[.18em] text-cyan-200">More for your journey</p><h2 className="mt-2 text-2xl font-semibold text-white">Trip workspace</h2><p className="mt-2 text-sm text-slate-400">Your trip is saved. These planning tools will be added in future updates.</p></div><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{upcomingModules.map(({ title, description, Icon }) => <article key={title} className="rounded-2xl border border-white/[0.07] bg-[#0B1120]/70 p-5 opacity-80"><span className="grid size-9 place-items-center rounded-lg bg-white/[0.04] text-slate-400"><Icon size={17}/></span><div className="mt-3 flex items-center justify-between gap-3"><h3 className="text-sm font-semibold text-slate-200">{title}</h3><span className="rounded-full border border-white/[0.08] px-2 py-1 text-[9px] uppercase tracking-wide text-slate-500">Coming later</span></div><p className="mt-2 text-xs leading-5 text-slate-500">{description}</p></article>)}</div></section>
       </>}
     </div>
