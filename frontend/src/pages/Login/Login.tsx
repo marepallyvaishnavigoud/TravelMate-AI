@@ -20,8 +20,8 @@ export function Login() {
     event.preventDefault(); setError(''); setNotice(''); setSubmitting(true)
     try {
       await login(email, password)
-      const destination = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/profile'
-      navigate(destination, { replace: true })
+      const destination = (location.state as { from?: { pathname?: string; search?: string; hash?: string; state?: unknown } } | null)?.from
+      navigate(destination ? { pathname: destination.pathname, search: destination.search, hash: destination.hash } : '/profile', { replace: true, state: destination?.state })
     } catch (cause) { setError(authErrorMessage(cause)) }
     finally { setSubmitting(false) }
   }

@@ -6,6 +6,7 @@ import { connectDatabase, disconnectDatabase, isDatabaseConnected } from './conf
 import { authRoutes } from './routes/authRoutes.js'
 import { savedDestinationRoutes } from './routes/savedDestinationRoutes.js'
 import { dashboardRoutes } from './routes/dashboardRoutes.js'
+import { tripRoutes } from './routes/tripRoutes.js'
 import { errorHandler } from './middleware/errorHandler.js'
 import { isJwtConfigured } from './utils/jwt.js'
 
@@ -15,7 +16,7 @@ const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
 
 app.disable('x-powered-by')
 app.use(helmet())
-app.use(cors({ origin: clientUrl, methods: ['GET','POST','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }))
+app.use(cors({ origin: clientUrl, methods: ['GET','POST','PUT','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }))
 app.use(express.json({ limit: '10kb' }))
 
 app.get('/api/health', (_request, response) => {
@@ -25,6 +26,7 @@ app.get('/api/health', (_request, response) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/saved-destinations', savedDestinationRoutes)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/trips', tripRoutes)
 app.use('/api', (_request, response) => response.status(404).json({ success: false, message: 'API route not found.' }))
 app.use(errorHandler)
 
