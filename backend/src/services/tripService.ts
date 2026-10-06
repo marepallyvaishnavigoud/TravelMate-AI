@@ -1,5 +1,6 @@
 import { Types } from 'mongoose'
 import { Trip } from '../models/Trip.js'
+import { Expense } from '../models/Expense.js'
 import type { TripInput } from '../validators/tripValidators.js'
 import { AppError } from '../utils/AppError.js'
 
@@ -41,6 +42,8 @@ export async function updateTrip(userId: string, id: string, input: TripInput) {
 }
 
 export async function deleteTrip(userId: string, id: string): Promise<void> {
-  const trip = await Trip.findOneAndDelete({ _id: objectId(id), userId: new Types.ObjectId(userId) })
+  const trip = await Trip.findOne({ _id: objectId(id), userId: new Types.ObjectId(userId) })
   if (!trip) throw new AppError(404, 'Trip not found.')
+  await Expense.deleteOne({ tripId: trip._id, userId: trip.userId })
+  await trip.deleteOne()
 }

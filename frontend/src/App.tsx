@@ -14,6 +14,7 @@ import { TripPlanner } from './pages/TripPlanner/TripPlanner'
 import { Trips } from './pages/Trips/Trips'
 import { TripDetails } from './pages/Trip/TripDetails'
 import { HotelsPage, RestaurantsPage } from './pages/Places/PlacesPages'
+import { ExpenseCalculator } from './pages/Expenses/ExpenseCalculator'
 
 function App() {
   return <AuthProvider><BrowserRouter><AppLayout><Routes>
@@ -30,6 +31,7 @@ function App() {
     <Route path="/trip-planner" element={<ProtectedRoute><TripPlanner /></ProtectedRoute>} />
     <Route path="/my-trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
     <Route path="/trips/:id" element={<ProtectedRoute><TripDetails /></ProtectedRoute>} />
+    <Route path="/trips/:id/expenses" element={<ProtectedRoute><ExpenseCalculator /></ProtectedRoute>} />
     <Route path="*" element={<HomePage />} />
   </Routes></AppLayout></BrowserRouter></AuthProvider>
 }
