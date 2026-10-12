@@ -7,10 +7,10 @@ type GeocodingFeature = { place_name?: string; center?: [number, number]; contex
 type DirectionsRoute = { distance?: number; duration?: number; geometry?: RouteGeometry }
 
 export function getMapboxToken(): string {
-  const token = process.env.MAPBOX_ACCESS_TOKEN
-  if (!token) {
+  const token = process.env.MAPBOX_ACCESS_TOKEN?.trim()
+  if (!token || /^(your_|replace_|example|<)/i.test(token) || !/^(sk|pk)\./.test(token)) {
     if (process.env.NODE_ENV !== 'production') console.warn('[mapService] MAPBOX_ACCESS_TOKEN is not configured.')
-    throw new AppError(503, 'Route calculation is not configured. Please try again later.')
+    throw new AppError(503, 'Set MAPBOX_ACCESS_TOKEN to a real Mapbox token in backend/.env, then restart the backend. Do not use a sample placeholder.')
   }
   return token
 }
@@ -25,6 +25,10 @@ async function providerJson<T>(url: URL, stage: string): Promise<T> {
   }
   if (!response.ok) {
     if (process.env.NODE_ENV !== 'production') console.warn('[mapService] Mapbox returned an unsuccessful response.', { stage, status: response.status })
+    if (response.status === 401 || response.status === 403) {
+      throw new AppError(503, 'Mapbox rejected the token. Check that it is active, permitted for geocoding and directions, and has no URL restrictions blocking backend requests.')
+    }
+    if (response.status === 429) throw new AppError(503, 'Mapbox rate limit reached. Please wait and retry the route.')
     throw new AppError(502, 'The map service could not calculate this route. Check the locations and try again.')
   }
   try { return await response.json() as T }
