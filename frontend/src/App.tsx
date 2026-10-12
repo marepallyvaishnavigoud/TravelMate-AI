@@ -15,6 +15,8 @@ import { Trips } from './pages/Trips/Trips'
 import { TripDetails } from './pages/Trip/TripDetails'
 import { HotelsPage, RestaurantsPage } from './pages/Places/PlacesPages'
 import { ExpenseCalculator } from './pages/Expenses/ExpenseCalculator'
+import { AssistantPage } from './pages/Assistant/AssistantPage'
+import { WeatherPage } from './pages/Weather/WeatherPage'
 
 function App() {
   return <AuthProvider><BrowserRouter><AppLayout><Routes>
@@ -32,6 +34,8 @@ function App() {
     <Route path="/my-trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
     <Route path="/trips/:id" element={<ProtectedRoute><TripDetails /></ProtectedRoute>} />
     <Route path="/trips/:id/expenses" element={<ProtectedRoute><ExpenseCalculator /></ProtectedRoute>} />
+    <Route path="/assistant" element={<ProtectedRoute><AssistantPage /></ProtectedRoute>} />
+    <Route path="/weather" element={<WeatherPage />} />
     <Route path="*" element={<HomePage />} />
   </Routes></AppLayout></BrowserRouter></AuthProvider>
 }
