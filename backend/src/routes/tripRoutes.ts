@@ -8,6 +8,7 @@ import {
   getTripController,
   getTripRouteController,
   getTripStopsController,
+  previewDrivingRouteController,
   listTripsController,
   updateTripController,
 } from '../controllers/tripController.js'
@@ -23,6 +24,7 @@ tripRoutes.use(authMiddleware)
 
 tripRoutes.get('/', listTripsController)
 tripRoutes.post('/', createTripController)
+tripRoutes.post('/route-preview', previewDrivingRouteController)
 tripRoutes.get('/:id/route', getTripRouteController)
 tripRoutes.get('/:id/stops', getTripStopsController)
 tripRoutes.get('/:id/itinerary', getTripItineraryController)

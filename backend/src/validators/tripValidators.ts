@@ -16,3 +16,11 @@ export const tripSchema = z.object({
 })
 
 export type TripInput = z.infer<typeof tripSchema>
+
+export const routePreviewSchema = z.object({
+  origin: z.string().trim().min(1, 'Enter an origin.').max(120),
+  destination: z.string().trim().min(1, 'Enter a destination.').max(120),
+}).strict().refine((input) => input.origin.toLocaleLowerCase() !== input.destination.toLocaleLowerCase(), {
+  message: 'Origin and destination must be different.',
+  path: ['destination'],
+})

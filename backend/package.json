@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "test": "npm run build && node --test tests/assistant.test.mjs tests/weather.test.mjs",
+    "test": "npm run build && node --test tests/assistant.test.mjs tests/weather.test.mjs tests/routePreview.test.mjs",
     "start": "node dist/server.js"
   },
   "keywords": [],

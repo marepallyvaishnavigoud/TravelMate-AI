@@ -2,7 +2,7 @@ import { generateItinerary } from '../services/aiService.js'
 import type { RequestHandler } from 'express'
 import { AppError } from '../utils/AppError.js'
 import { createTrip, deleteTrip, getTrip, listTrips, updateTrip } from '../services/tripService.js'
-import { tripSchema } from '../validators/tripValidators.js'
+import { routePreviewSchema, tripSchema } from '../validators/tripValidators.js'
 import { getDrivingDirections, geocodeLocation } from '../services/mapService.js'
 import { searchPlacesAlongRoute } from '../services/places/placesService.js'
 import { tripStopsSchema } from '../validators/placeValidators.js'
@@ -59,6 +59,14 @@ export const getTripRouteController: RequestHandler = async (request, response) 
   }
   const origin = await geocodeLocation(trip.origin, 'origin')
   const destination = await geocodeLocation(trip.destination, 'destination')
+  const route = await getDrivingDirections(origin, destination)
+  response.json({ success: true, data: { supported: true, origin, destination, ...route, travelMode: 'driving' } })
+}
+
+export const previewDrivingRouteController: RequestHandler = async (request, response) => {
+  const input = routePreviewSchema.parse(request.body)
+  const origin = await geocodeLocation(input.origin, 'origin')
+  const destination = await geocodeLocation(input.destination, 'destination')
   const route = await getDrivingDirections(origin, destination)
   response.json({ success: true, data: { supported: true, origin, destination, ...route, travelMode: 'driving' } })
 }

@@ -96,6 +96,10 @@ export const tripService = {
     const { data } = await api.get<{ success: true; data: TripRoute }>(`/trips/${encodeURIComponent(id)}/route`, { timeout: 45000 })
     return data.data
   },
+  async previewDrivingRoute(origin: string, destination: string): Promise<TripRoute> {
+    const { data } = await api.post<{ success: true; data: TripRoute }>('/trips/route-preview', { origin, destination }, { timeout: 45000 })
+    return data.data
+  },
   async generateTripItinerary(id: string, preferences: { pace: 'relaxed' | 'balanced' | 'packed'; accommodationPreference: 'budget' | 'standard' | 'premium'; preferences: string }): Promise<GeneratedItinerary> {
     const { data } = await api.post<{ success: true; data: { itinerary: GeneratedItinerary } }>(
       `/trips/${encodeURIComponent(id)}/itinerary/generate`,
