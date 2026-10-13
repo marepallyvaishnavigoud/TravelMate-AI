@@ -5,16 +5,18 @@ import { ArrowRight, Compass, MapPin, Search, X } from 'lucide-react'
 import { Container } from '../../components/ui/Container'
 import { DestinationCard } from '../../components/destination/DestinationCard'
 import { TravelImage } from '../../components/common/TravelImage'
+import { CinematicBackdrop } from '../../components/common/CinematicBackdrop'
 import { exploreDestinations, type DestinationCategory, type IndiaRegion } from '../../data/destinations'
+import { getDestinationMedia } from '../../data/destinationMedia'
 
 const categories: Array<'All' | DestinationCategory> = ['All','Beaches','Mountains','Adventure','Heritage','Nature','Spiritual','Food & Culture','Luxury','Wildlife']
 const regions: Array<{ name: IndiaRegion; image: string; description: string }> = [
-  { name: 'North India', image: '/images/kashmir.svg', description: 'Himalayan horizons & ancient cities' },
-  { name: 'South India', image: '/images/kerala.svg', description: 'Backwaters, hills & coastal calm' },
-  { name: 'West India', image: '/images/jaipur.svg', description: 'Desert stories & seaside escapes' },
-  { name: 'East India', image: '/images/andaman.svg', description: 'River life & island blues' },
-  { name: 'Northeast India', image: '/images/manali.svg', description: 'Wild landscapes & living cultures' },
-  { name: 'Central India', image: '/images/wildlife.svg', description: 'Forest reserves & heritage trails' },
+  { name: 'North India', image: getDestinationMedia('kashmir').src, description: 'Himalayan horizons & ancient cities' },
+  { name: 'South India', image: getDestinationMedia('kerala').src, description: 'Backwaters, hills & coastal calm' },
+  { name: 'West India', image: getDestinationMedia('goa').src, description: 'Desert stories & seaside escapes' },
+  { name: 'East India', image: getDestinationMedia('andaman').src, description: 'River life & island blues' },
+  { name: 'Northeast India', image: getDestinationMedia('kaziranga').src, description: 'Wild landscapes & living cultures' },
+  { name: 'Central India', image: getDestinationMedia('khajuraho').src, description: 'Forest reserves & heritage trails' },
 ]
 
 export function Explore() {
@@ -34,8 +36,8 @@ export function Explore() {
   const featured = exploreDestinations.find((place) => place.featured)!
 
   return <>
-    <section className="relative isolate overflow-hidden border-b border-white/[0.06]">
-      <div aria-hidden="true" className="absolute inset-0 -z-10"><TravelImage src="/images/hero-coast.svg" alt="" className="size-full opacity-30" /><div className="absolute inset-0 bg-gradient-to-r from-[#030712] via-[#030712]/85 to-[#030712]/25" /><div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-[#030712]/30" /></div>
+    <section className="relative isolate flex min-h-[calc(100svh-5.5rem)] items-center overflow-hidden border-b border-white/[0.06]">
+      <CinematicBackdrop />
       <Container className="py-14 sm:py-20 lg:py-24">
         <motion.div initial={reduced ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }} className="max-w-3xl">
           <nav aria-label="Breadcrumb" className="mb-8 text-xs text-slate-400"><Link to="/" className="hover:text-white">Home</Link><span className="mx-2 text-slate-600">/</span><span className="text-slate-200">Explore</span></nav>

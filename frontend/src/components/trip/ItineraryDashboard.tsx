@@ -6,6 +6,8 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { exploreDestinations } from '../../data/destinations'
+import { getDestinationMedia } from '../../data/destinationMedia'
+import { TravelImage } from '../common/TravelImage'
 import type { GeneratedItinerary, ItineraryActivity, ItineraryDay, Trip } from '../../services/tripService'
 
 type Props = {
@@ -25,13 +27,10 @@ type Props = {
   onEdit: () => void
 }
 
-const destinationArtwork: Record<string, string> = {
-  goa: '/images/goa.svg', panaji: '/images/goa.svg',
-  kerala: '/images/kerala.svg', alappuzha: '/images/kerala.svg', munnar: '/images/kerala.svg',
-  manali: '/images/manali.svg', kashmir: '/images/kashmir.svg', srinagar: '/images/kashmir.svg',
-  jaipur: '/images/jaipur.svg', udaipur: '/images/udaipur.svg',
-  andaman: '/images/andaman.svg', 'andaman islands': '/images/andaman.svg',
-}
+const destinationArtwork: Record<string, string> = Object.fromEntries(exploreDestinations.flatMap((place) => [
+  [destinationKey(place.name), place.image] as const,
+  [destinationKey(place.city), place.image] as const,
+]))
 
 function money(value: number, currency: string): string {
   try { return new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(value) }
@@ -46,11 +45,11 @@ function tripDays(trip: Trip): number {
 
 function destinationKey(value: string): string { return value.trim().toLowerCase() }
 
-function activityImage(activity: ItineraryActivity, destination: string): string | undefined {
+function activityImage(activity: ItineraryActivity, destination: string): string {
   if (activity.category === 'food') return '/images/food.svg'
   if (activity.category === 'adventure') return '/images/adventure.svg'
-  if (/nature|wildlife|forest|walk/i.test(`${activity.title} ${activity.description}`)) return '/images/wildlife.svg'
-  return destinationArtwork[destinationKey(destination)]
+  if (/nature|wildlife|forest|walk/i.test(`${activity.title} ${activity.description}`)) return '/images/nature.svg'
+  return destinationArtwork[destinationKey(destination)] ?? getDestinationMedia(destinationKey(destination)).src
 }
 
 function activityIcon(category: ItineraryActivity['category']) {
@@ -68,7 +67,7 @@ function ActivityCard({ activity, destination, currency }: { activity: Itinerary
   const image = activityImage(activity, destination)
   return <article className="group flex min-w-0 overflow-hidden rounded-2xl border border-white/[0.07] bg-[#091323] transition hover:border-cyan-200/20">
     <div className="relative hidden w-28 shrink-0 bg-gradient-to-br from-indigo-500/20 via-[#12223a] to-cyan-500/10 sm:block">
-      {image && <img src={image} alt="" loading="lazy" className="absolute inset-0 size-full object-cover opacity-80 transition duration-500 group-hover:scale-105" onError={(event) => { event.currentTarget.style.display = 'none' }} />}
+      <TravelImage src={image} alt={`${activity.category} activity near ${destination}`} className="absolute inset-0 size-full" imageClassName="opacity-80 transition duration-500 group-hover:scale-105" />
       <span className="absolute bottom-2 left-2 grid size-8 place-items-center rounded-xl border border-white/15 bg-[#07111e]/80 text-cyan-100"><Icon size={16}/></span>
     </div>
     <div className="min-w-0 flex-1 p-4">
@@ -111,7 +110,7 @@ export function ItineraryDashboard(props: Props) {
   const [selectedDay, setSelectedDay] = useState(0)
   const duration = itinerary?.days.length ?? tripDays(trip)
   const place = exploreDestinations.find((entry) => [entry.name, entry.city, entry.state].some((item) => destinationKey(item) === destinationKey(trip.destination)))
-  const art = destinationArtwork[destinationKey(trip.destination)]
+  const art = destinationArtwork[destinationKey(trip.destination)] ?? getDestinationMedia(destinationKey(trip.destination)).src
   const selected = itinerary?.days[selectedDay]
   const totalByCategories = useMemo(() => itinerary?.budgetEstimate ? Object.values(itinerary.budgetEstimate).filter((item): item is number => typeof item === 'number').reduce((sum, value) => sum + value, 0) : null, [itinerary])
 
@@ -132,7 +131,7 @@ export function ItineraryDashboard(props: Props) {
 
   return <section className="mt-7 space-y-5" aria-label="Smart itinerary dashboard">
     <header className="relative isolate min-h-[270px] overflow-hidden rounded-[28px] border border-white/[0.09] bg-[linear-gradient(115deg,#101b31_0%,#0b1322_55%,#14203a_100%)] p-6 sm:min-h-[310px] sm:p-9">
-      {art && <img src={art} alt={place ? `${place.name}, ${place.country} destination illustration` : ''} className="absolute inset-0 z-0 size-full object-cover opacity-45" onError={(event) => { event.currentTarget.style.display = 'none' }} />}
+      <TravelImage src={art} alt={place ? `${place.name}, ${place.country}` : `${trip.destination} destination`} className="absolute inset-0 z-0 size-full" imageClassName="opacity-45" />
       <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#07101d]/95 via-[#07101d]/75 to-[#07101d]/25" />
       <div className="relative z-10 flex h-full min-h-[220px] flex-col justify-between gap-8 sm:min-h-[230px]">
         <div className="flex flex-wrap items-center justify-between gap-3"><span className="inline-flex items-center gap-2 rounded-full border border-cyan-100/20 bg-[#07101d]/50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.19em] text-cyan-100"><Sparkles size={13}/>Rule-based smart itinerary</span><Link to="/my-trips" className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-white/15 bg-[#07101d]/40 px-3 text-xs font-semibold text-white hover:bg-white/10"><ArrowLeft size={14}/>All trips</Link></div>
@@ -158,7 +157,7 @@ export function ItineraryDashboard(props: Props) {
         {itinerary && <>
           <nav aria-label="Choose itinerary day" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2">{itinerary.days.map((day, index) => <button key={day.day} type="button" onClick={() => setSelectedDay(index)} aria-current={selectedDay === index ? 'step' : undefined} className={`min-w-[88px] shrink-0 rounded-2xl border px-3 py-2.5 text-left transition ${selectedDay === index ? 'border-cyan-200/35 bg-cyan-200/[0.09] text-white shadow-md shadow-cyan-950/20' : 'border-white/[0.07] bg-[#0a1423] text-slate-400 hover:border-white/20 hover:text-white'}`}><span className="block text-[9px] font-bold uppercase tracking-[.15em] text-cyan-200">Day {day.day}</span><span className="mt-1 block text-xs font-medium">{new Date(`${day.date}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}</span></button>)}</nav>
           {selected && <article className="overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0a1423] shadow-[0_20px_55px_rgba(0,0,0,.18)]">
-            <div className="relative overflow-hidden border-b border-white/[0.07] bg-[linear-gradient(110deg,#101d34,#0b1423)] p-5 sm:p-7">{art && <img src={art} alt="" className="absolute right-0 top-0 h-full w-2/5 object-cover opacity-20 [mask-image:linear-gradient(to_right,transparent,black)]"/>}<div className="relative flex flex-wrap items-end justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-cyan-200">{new Date(`${selected.date}T00:00:00`).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p><h3 className="mt-2 text-2xl font-bold text-white">{selected.title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">{selected.summary}</p></div><div className="flex gap-2"><button type="button" onClick={() => setSelectedDay((index) => Math.max(0, index - 1))} disabled={selectedDay === 0} aria-label="Previous day" className="grid size-10 place-items-center rounded-xl border border-white/10 text-white hover:bg-white/[0.06] disabled:opacity-30"><ArrowLeft size={16}/></button><button type="button" onClick={() => setSelectedDay((index) => Math.min(itinerary.days.length - 1, index + 1))} disabled={selectedDay >= itinerary.days.length - 1} aria-label="Next day" className="grid size-10 place-items-center rounded-xl border border-white/10 text-white hover:bg-white/[0.06] disabled:opacity-30"><ArrowRight size={16}/></button></div></div></div>
+            <div className="relative overflow-hidden border-b border-white/[0.07] bg-[linear-gradient(110deg,#101d34,#0b1423)] p-5 sm:p-7"><TravelImage src={art} alt="" className="absolute right-0 top-0 h-full w-2/5" imageClassName="opacity-20 [mask-image:linear-gradient(to_right,transparent,black)]"/><div className="relative flex flex-wrap items-end justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-cyan-200">{new Date(`${selected.date}T00:00:00`).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p><h3 className="mt-2 text-2xl font-bold text-white">{selected.title}</h3><p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">{selected.summary}</p></div><div className="flex gap-2"><button type="button" onClick={() => setSelectedDay((index) => Math.max(0, index - 1))} disabled={selectedDay === 0} aria-label="Previous day" className="grid size-10 place-items-center rounded-xl border border-white/10 text-white hover:bg-white/[0.06] disabled:opacity-30"><ArrowLeft size={16}/></button><button type="button" onClick={() => setSelectedDay((index) => Math.min(itinerary.days.length - 1, index + 1))} disabled={selectedDay >= itinerary.days.length - 1} aria-label="Next day" className="grid size-10 place-items-center rounded-xl border border-white/10 text-white hover:bg-white/[0.06] disabled:opacity-30"><ArrowRight size={16}/></button></div></div></div>
             <div className="space-y-5 p-5 sm:p-7">{([
               { key: 'morning', label: 'Morning', time: 'Start the day', icon: Sun },
               { key: 'afternoon', label: 'Afternoon', time: 'Midday plans', icon: Camera },

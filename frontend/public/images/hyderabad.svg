@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#e8b88e"/><stop offset="1" stop-color="#ad6d58"/></linearGradient>
+    <linearGradient id="stone" x2="0" y2="1"><stop stop-color="#e6b17e"/><stop offset="1" stop-color="#b66f50"/></linearGradient>
+    <linearGradient id="shade" x2="0" y2="1"><stop stop-color="#08111c" stop-opacity="0"/><stop offset="1" stop-color="#08111c" stop-opacity=".58"/></linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#sky)"/>
+  <circle cx="940" cy="148" r="86" fill="#fff0cc" fill-opacity=".55"/>
+  <path d="M0 490h1200v210H0z" fill="#493840"/>
+  <path d="M170 500V310h90V205h34v105h75v190h80V310h75V205h34v105h75v190h80V310h75V205h34v105h75v190h90v-60h46v60h49v-90h37v90h23v200H170z" fill="url(#stone)" stroke="#744b45" stroke-width="8"/>
+  <path d="M245 312q29-90 58 0M425 312q29-90 58 0M605 312q29-90 58 0M785 312q29-90 58 0" fill="#794b49" stroke="#704545" stroke-width="8"/>
+  <path d="M245 312v-98q29-62 58 0v98M425 312v-98q29-62 58 0v98M605 312v-98q29-62 58 0v98M785 312v-98q29-62 58 0v98" fill="none" stroke="#704545" stroke-width="10"/>
+  <path d="M280 500V395q0-90 66-90t66 90v105M460 500V395q0-90 66-90t66 90v105M640 500V395q0-90 66-90t66 90v105M820 500V395q0-90 66-90t66 90v105" fill="#6c4545" stroke="#855348" stroke-width="9"/>
+  <path d="M350 500v-85q0-56 46-56t46 56v85M530 500v-85q0-56 46-56t46 56v85M710 500v-85q0-56 46-56t46 56v85" fill="#493840"/>
+  <path d="M0 566h1200" stroke="#e2b079" stroke-opacity=".35" stroke-width="6"/>
+  <rect width="1200" height="700" fill="url(#shade)"/>
+</svg>

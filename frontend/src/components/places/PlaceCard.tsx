@@ -1,6 +1,7 @@
 import { ExternalLink, MapPin, Star, Clock3, Globe } from 'lucide-react'
 import type { Place } from '../../services/placesService'
 import { DataStatusBadge } from './DataStatusBadge'
+import { TravelImage } from '../common/TravelImage'
 
 const categoryLabels = { hotel: 'Hotel', restaurant: 'Restaurant', attraction: 'Attraction', petrol: 'Petrol', cafe: 'Cafe' }
 const priceLabels: Record<string, string> = { PRICE_LEVEL_FREE: 'Free', PRICE_LEVEL_INEXPENSIVE: '$', PRICE_LEVEL_MODERATE: '$$', PRICE_LEVEL_EXPENSIVE: '$$$', PRICE_LEVEL_VERY_EXPENSIVE: '$$$$' }
@@ -9,7 +10,7 @@ export function PlaceCard({ place }: { place: Place }) {
   const maps = place.googleMapsUri ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.latitude},${place.longitude}`)}`
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${place.latitude},${place.longitude}`)}`
   return <article className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0B1120]">
-    {place.image ? <img src={place.image} alt="" loading="lazy" className="h-40 w-full object-cover" /> : <div aria-hidden="true" className="grid h-24 place-items-center bg-[radial-gradient(ellipse_at_top,rgba(34,211,238,.08),transparent_65%),#070d19]"><MapPin size={22} className="text-cyan-200/70"/></div>}
+    <TravelImage src={place.image} alt={`${place.name} ${place.category} ${place.providerCategories.join(' ')} place`} className="h-40 w-full" />
     <div className="p-4">
       <div className="flex flex-wrap items-center justify-between gap-2"><span className="text-[10px] font-semibold uppercase tracking-[.14em] text-cyan-200">{categoryLabels[place.category]}</span><DataStatusBadge status={place.dataStatus}/></div>
       <h3 className="mt-2 line-clamp-2 font-semibold text-white">{place.name}</h3>

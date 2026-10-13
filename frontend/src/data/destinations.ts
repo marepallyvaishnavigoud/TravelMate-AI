@@ -1,3 +1,4 @@
+﻿import { getDestinationMedia } from './destinationMedia'
 export type Destination = {
   id?: string
   name: string
@@ -23,7 +24,7 @@ export type DestinationCategory = 'Beaches' | 'Mountains' | 'Adventure' | 'Herit
 export type IndiaRegion = 'North India' | 'South India' | 'West India' | 'East India' | 'Northeast India' | 'Central India'
 export type ExploreDestination = Destination & { id: string; city: string; state: string; country: string; description: string; shortDescription: string; category: DestinationCategory; tags: string[]; featured: boolean; rating: number; bestTime: string; estimatedDays: number; indiaRegion: IndiaRegion }
 
-const makeDestination = (id: string, name: string, city: string, state: string, indiaRegion: IndiaRegion, category: DestinationCategory, image: string, shortDescription: string, tags: string[], rating = 4.8): ExploreDestination => ({ id, name, city, state, indiaRegion, country: 'India', description: shortDescription, shortDescription, category, tags, image: `/images/${image}.svg`, alt: `${name}, ${state} — illustrated destination scene`, note: `${category} · 4–6 days`, region: state, tag: tags[0], featured: id === 'kerala', rating, bestTime: 'October – March', estimatedDays: 5 })
+const makeDestination = (id: string, name: string, city: string, state: string, indiaRegion: IndiaRegion, category: DestinationCategory, _image: string, shortDescription: string, tags: string[], rating = 4.8): ExploreDestination => ({ id, name, city, state, indiaRegion, country: 'India', description: shortDescription, shortDescription, category, tags, image: getDestinationMedia(id).src, alt: getDestinationMedia(id).alt, note: `${category} · 4–6 days`, region: state, tag: tags[0], featured: id === 'kerala', rating, bestTime: 'October – March', estimatedDays: 5 })
 
 export const exploreDestinations: ExploreDestination[] = [
   makeDestination('goa','Goa','Panaji','Goa','West India','Beaches','goa','Golden beaches, Portuguese lanes and unhurried coastal evenings.',['beach','coast','food']),
@@ -51,19 +52,21 @@ export const exploreDestinations: ExploreDestination[] = [
 ]
 
 export const trendingDestinations: Destination[] = [
-  { name: 'Goa', region: 'Western India', note: 'Sunlit shores · 4–6 days', image: '/images/goa.svg', alt: 'Illustrated palms beside the sunset coast of Goa', tag: 'Coastal escape' },
-  { name: 'Kerala', region: 'Southern India', note: 'Backwaters · 5–7 days', image: '/images/kerala.svg', alt: 'Illustrated Kerala backwaters framed by lush hills', tag: 'Slow travel' },
-  { name: 'Manali', region: 'Himachal Pradesh', note: 'Mountain air · 4–5 days', image: '/images/manali.svg', alt: 'Illustrated snow peaks above a mountain valley', tag: 'Mountain retreat' },
-  { name: 'Jaipur', region: 'Rajasthan', note: 'Living heritage · 2–3 days', image: '/images/jaipur.svg', alt: 'Illustrated pink city palace in Jaipur', tag: 'Culture & craft' },
-  { name: 'Kashmir', region: 'Northern India', note: 'Alpine calm · 6–8 days', image: '/images/kashmir.svg', alt: 'Illustrated alpine lake beneath Kashmir mountains', tag: 'A little wonder' },
-  { name: 'Udaipur', region: 'Rajasthan', note: 'Lakeside romance · 2–4 days', image: '/images/udaipur.svg', alt: 'Illustrated lakeside palace in Udaipur at dusk', tag: 'City of lakes' },
+  { name: 'Goa', region: 'Western India', note: 'Sunlit shores · 4–6 days', image: getDestinationMedia('goa').src, alt: 'Illustrated palms beside the sunset coast of Goa', tag: 'Coastal escape' },
+  { name: 'Kerala', region: 'Southern India', note: 'Backwaters · 5–7 days', image: getDestinationMedia('kerala').src, alt: 'Illustrated Kerala backwaters framed by lush hills', tag: 'Slow travel' },
+  { name: 'Manali', region: 'Himachal Pradesh', note: 'Mountain air · 4–5 days', image: getDestinationMedia('manali').src, alt: 'Illustrated snow peaks above a mountain valley', tag: 'Mountain retreat' },
+  { name: 'Jaipur', region: 'Rajasthan', note: 'Living heritage · 2–3 days', image: getDestinationMedia('jaipur').src, alt: 'Illustrated pink city palace in Jaipur', tag: 'Culture & craft' },
+  { name: 'Kashmir', region: 'Northern India', note: 'Alpine calm · 6–8 days', image: getDestinationMedia('kashmir').src, alt: 'Illustrated alpine lake beneath Kashmir mountains', tag: 'A little wonder' },
+  { name: 'Udaipur', region: 'Rajasthan', note: 'Lakeside romance · 2–4 days', image: getDestinationMedia('udaipur').src, alt: 'Illustrated lakeside palace in Udaipur at dusk', tag: 'City of lakes' },
 ]
 
 export const editorialDestinations: Destination[] = [
-  { name: 'The coast, at your pace', region: 'Goa', note: 'Quiet mornings, open horizons.', image: '/images/goa.svg', alt: 'A quiet illustrated Goan beach at golden hour' },
-  { name: 'Into the high country', region: 'Kashmir', note: 'Find your own kind of stillness.', image: '/images/kashmir.svg', alt: 'A still alpine lake in Kashmir' },
-  { name: 'A softer kind of escape', region: 'Kerala', note: 'Follow the water south.', image: '/images/kerala.svg', alt: 'A houseboat moving through Kerala backwaters' },
-  { name: 'Where the desert glows', region: 'Rajasthan', note: 'Stories in every sandstone arch.', image: '/images/jaipur.svg', alt: 'Rajasthan palace architecture glowing at sunset' },
-  { name: 'Above the everyday', region: 'Himachal Pradesh', note: 'Make room for mountain air.', image: '/images/manali.svg', alt: 'A Himalayan peak rising above pine forest' },
-  { name: 'An island state of mind', region: 'Andaman', note: 'Clear water, unhurried days.', image: '/images/andaman.svg', alt: 'Turquoise sea around a quiet Andaman island' },
+  { name: 'The coast, at your pace', region: 'Goa', note: 'Quiet mornings, open horizons.', image: getDestinationMedia('goa').src, alt: 'A quiet illustrated Goan beach at golden hour' },
+  { name: 'Into the high country', region: 'Kashmir', note: 'Find your own kind of stillness.', image: getDestinationMedia('kashmir').src, alt: 'A still alpine lake in Kashmir' },
+  { name: 'A softer kind of escape', region: 'Kerala', note: 'Follow the water south.', image: getDestinationMedia('kerala').src, alt: 'A houseboat moving through Kerala backwaters' },
+  { name: 'Where the desert glows', region: 'Rajasthan', note: 'Stories in every sandstone arch.', image: getDestinationMedia('jaipur').src, alt: 'Rajasthan palace architecture glowing at sunset' },
+  { name: 'Above the everyday', region: 'Himachal Pradesh', note: 'Make room for mountain air.', image: getDestinationMedia('manali').src, alt: 'A Himalayan peak rising above pine forest' },
+  { name: 'An island state of mind', region: 'Andaman', note: 'Clear water, unhurried days.', image: getDestinationMedia('andaman').src, alt: 'Turquoise sea around a quiet Andaman island' },
 ]
+
+
