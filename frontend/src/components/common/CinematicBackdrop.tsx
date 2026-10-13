@@ -51,7 +51,7 @@ export function CinematicBackdrop() {
   }, [activeSlot, sceneIndexes])
 
   return <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden bg-[#07101c]">
-    <img src="/images/hero-coast.svg" alt="" className="absolute inset-0 size-full object-cover" />
+    <img src={scenes[0].poster} alt="" className="absolute inset-0 size-full object-cover" />
     {!reducedMotion && ([0, 1] as const).map((slot) => {
       const item = scenes[sceneIndexes[slot]]
       const active = slot === activeSlot

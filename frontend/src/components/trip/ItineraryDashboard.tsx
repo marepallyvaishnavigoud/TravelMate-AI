@@ -46,9 +46,9 @@ function tripDays(trip: Trip): number {
 function destinationKey(value: string): string { return value.trim().toLowerCase() }
 
 function activityImage(activity: ItineraryActivity, destination: string): string {
-  if (activity.category === 'food') return '/images/food.svg'
-  if (activity.category === 'adventure') return '/images/adventure.svg'
-  if (/nature|wildlife|forest|walk/i.test(`${activity.title} ${activity.description}`)) return '/images/nature.svg'
+  if (activity.category === 'food') return 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1200&q=80'
+  if (activity.category === 'adventure') return 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=1200&q=80'
+  if (/nature|wildlife|forest|walk/i.test(`${activity.title} ${activity.description}`)) return getDestinationMedia('munnar').src
   return destinationArtwork[destinationKey(destination)] ?? getDestinationMedia(destinationKey(destination)).src
 }
 

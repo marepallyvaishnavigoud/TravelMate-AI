@@ -52,16 +52,16 @@ export const exploreDestinations: ExploreDestination[] = [
 ]
 
 export const trendingDestinations: Destination[] = [
-  { name: 'Goa', region: 'Western India', note: 'Sunlit shores · 4–6 days', image: getDestinationMedia('goa').src, alt: 'Illustrated palms beside the sunset coast of Goa', tag: 'Coastal escape' },
-  { name: 'Kerala', region: 'Southern India', note: 'Backwaters · 5–7 days', image: getDestinationMedia('kerala').src, alt: 'Illustrated Kerala backwaters framed by lush hills', tag: 'Slow travel' },
-  { name: 'Manali', region: 'Himachal Pradesh', note: 'Mountain air · 4–5 days', image: getDestinationMedia('manali').src, alt: 'Illustrated snow peaks above a mountain valley', tag: 'Mountain retreat' },
-  { name: 'Jaipur', region: 'Rajasthan', note: 'Living heritage · 2–3 days', image: getDestinationMedia('jaipur').src, alt: 'Illustrated pink city palace in Jaipur', tag: 'Culture & craft' },
-  { name: 'Kashmir', region: 'Northern India', note: 'Alpine calm · 6–8 days', image: getDestinationMedia('kashmir').src, alt: 'Illustrated alpine lake beneath Kashmir mountains', tag: 'A little wonder' },
-  { name: 'Udaipur', region: 'Rajasthan', note: 'Lakeside romance · 2–4 days', image: getDestinationMedia('udaipur').src, alt: 'Illustrated lakeside palace in Udaipur at dusk', tag: 'City of lakes' },
+  { name: 'Goa', region: 'Western India', note: 'Sunlit shores · 4–6 days', image: getDestinationMedia('goa').src, alt: 'Goa coastline and beach', tag: 'Coastal escape' },
+  { name: 'Kerala', region: 'Southern India', note: 'Backwaters · 5–7 days', image: getDestinationMedia('kerala').src, alt: 'Houseboat on Kerala backwaters', tag: 'Slow travel' },
+  { name: 'Manali', region: 'Himachal Pradesh', note: 'Mountain air · 4–5 days', image: getDestinationMedia('manali').src, alt: 'Snow capped Himalayan mountains near Manali', tag: 'Mountain retreat' },
+  { name: 'Jaipur', region: 'Rajasthan', note: 'Living heritage · 2–3 days', image: getDestinationMedia('jaipur').src, alt: 'Hawa Mahal palace in Jaipur', tag: 'Culture & craft' },
+  { name: 'Kashmir', region: 'Northern India', note: 'Alpine calm · 6–8 days', image: getDestinationMedia('kashmir').src, alt: 'Houseboats on Dal Lake in Srinagar', tag: 'A little wonder' },
+  { name: 'Udaipur', region: 'Rajasthan', note: 'Lakeside romance · 2–4 days', image: getDestinationMedia('udaipur').src, alt: 'City Palace overlooking Lake Pichola in Udaipur', tag: 'City of lakes' },
 ]
 
 export const editorialDestinations: Destination[] = [
-  { name: 'The coast, at your pace', region: 'Goa', note: 'Quiet mornings, open horizons.', image: getDestinationMedia('goa').src, alt: 'A quiet illustrated Goan beach at golden hour' },
+  { name: 'The coast, at your pace', region: 'Goa', note: 'Quiet mornings, open horizons.', image: getDestinationMedia('goa').src, alt: 'Goa coastline and beach' },
   { name: 'Into the high country', region: 'Kashmir', note: 'Find your own kind of stillness.', image: getDestinationMedia('kashmir').src, alt: 'A still alpine lake in Kashmir' },
   { name: 'A softer kind of escape', region: 'Kerala', note: 'Follow the water south.', image: getDestinationMedia('kerala').src, alt: 'A houseboat moving through Kerala backwaters' },
   { name: 'Where the desert glows', region: 'Rajasthan', note: 'Stories in every sandstone arch.', image: getDestinationMedia('jaipur').src, alt: 'Rajasthan palace architecture glowing at sunset' },

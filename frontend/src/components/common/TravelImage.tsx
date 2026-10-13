@@ -1,34 +1,32 @@
 import { useState } from 'react'
 import { ImageOff } from 'lucide-react'
+import { getDestinationMedia } from '../../data/destinationMedia'
 
 type TravelImageProps = { src?: string | null; alt: string; className?: string; imageClassName?: string; loading?: 'eager' | 'lazy' }
 
 function fallbackFor(alt: string): string {
   const label = alt.toLocaleLowerCase()
-  if (label.includes('heritage house')) return '/images/stay-heritage.svg'
-  if (label.includes('garden view stay')) return '/images/stay-garden.svg'
-  if (label.includes('riverside retreat')) return '/images/stay-riverside.svg'
-  if (label.includes('hotel') || label.includes('accommodation')) return '/images/stay-garden.svg'
-  if (label.includes('church') || label.includes('basilica')) return '/images/church.svg'
-  if (label.includes('attraction') || label.includes('temple') || label.includes('fort') || label.includes('heritage') || label.includes('historic') || label.includes('architecture')) return '/images/heritage.svg'
-  if (label.includes('bebinca') || label.includes('dessert')) return '/images/food-dessert.svg'
-  if (label.includes('appam') || label.includes('poi bread') || label.includes('snack')) return '/images/food-snack.svg'
-  if (label.includes('fish curry') || label.includes('spice')) return '/images/food-curry.svg'
-  if (label.includes('food') || label.includes('meal') || label.includes('thali') || label.includes('cuisine') || label.includes('restaurant') || label.includes('cafe')) return '/images/food.svg'
-  if (label.includes('market')) return '/images/market.svg'
-  if (label.includes('nature') || label.includes('scenic') || label.includes('forest') || label.includes('landscape') || label.includes('viewpoint')) return '/images/nature.svg'
-  if (label.includes('goa') || label.includes('mumbai') || label.includes('puducherry') || label.includes('pondicherry')) return '/images/goa.svg'
-  if (label.includes('ooty') || label.includes('nilgiri')) return '/images/ooty.svg'
-  if (label.includes('kerala') || label.includes('munnar') || label.includes('coorg')) return '/images/kerala.svg'
-  if (label.includes('kashmir') || label.includes('srinagar') || label.includes('dal lake')) return '/images/kashmir.svg'
-  if (label.includes('manali') || label.includes('himalaya') || label.includes('darjeeling')) return '/images/manali.svg'
-  if (label.includes('udaipur') || label.includes('lake pichola')) return '/images/udaipur.svg'
-  if (label.includes('hyderabad') || label.includes('charminar')) return '/images/hyderabad.svg'
-  if (label.includes('jaipur') || label.includes('agra') || label.includes('delhi') || label.includes('jaisalmer') || label.includes('khajuraho')) return '/images/heritage.svg'
-  if (label.includes('andaman') || label.includes('island')) return '/images/andaman.svg'
-  if (label.includes('wildlife') || label.includes('kaziranga')) return '/images/wildlife.svg'
-  if (label.includes('varanasi') || label.includes('rishikesh') || label.includes('amritsar')) return '/images/spiritual.svg'
-  return '/images/hero-coast.svg'
+  const photo = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`
+  if (label.includes('hotel') || label.includes('accommodation') || label.includes('stay')) return photo('photo-1566073771259-6a8506099945')
+  if (label.includes('market')) return photo('photo-1533900298318-6b8da08a523e')
+  if (label.includes('bebinca') || label.includes('dessert')) return photo('photo-1488477181946-6428a0291777')
+  if (label.includes('appam') || label.includes('poi bread') || label.includes('snack')) return photo('photo-1601050690597-df0568f70950')
+  if (label.includes('fish curry') || label.includes('spice') || label.includes('food') || label.includes('meal') || label.includes('thali') || label.includes('cuisine') || label.includes('restaurant') || label.includes('cafe')) return photo('photo-1565557623262-b51c2513a641')
+  const destinations: Array<[string, string]> = [
+    ['goa', 'goa'], ['mumbai', 'mumbai'], ['puducherry', 'pondicherry'], ['pondicherry', 'pondicherry'],
+    ['ooty', 'ooty'], ['nilgiri', 'ooty'], ['kerala', 'kerala'], ['munnar', 'munnar'], ['coorg', 'coorg'],
+    ['kashmir', 'kashmir'], ['srinagar', 'kashmir'], ['dal lake', 'kashmir'], ['manali', 'manali'],
+    ['himalaya', 'manali'], ['darjeeling', 'darjeeling'], ['udaipur', 'udaipur'], ['lake pichola', 'udaipur'],
+    ['hyderabad', 'hyderabad'], ['charminar', 'hyderabad'], ['jaipur', 'jaipur'], ['agra', 'agra'], ['delhi', 'delhi'],
+    ['jaisalmer', 'jaisalmer'], ['khajuraho', 'khajuraho'], ['andaman', 'andaman'], ['island', 'andaman'],
+    ['kaziranga', 'kaziranga'], ['varanasi', 'varanasi'], ['rishikesh', 'rishikesh'], ['amritsar', 'amritsar'],
+  ]
+  const destination = destinations.find(([name]) => label.includes(name))
+  if (destination) return getDestinationMedia(destination[1]).src
+  if (label.includes('nature') || label.includes('scenic') || label.includes('forest') || label.includes('landscape') || label.includes('viewpoint')) return getDestinationMedia('munnar').src
+  if (label.includes('church') || label.includes('basilica')) return getDestinationMedia('goa').src
+  if (label.includes('attraction') || label.includes('temple') || label.includes('fort') || label.includes('heritage') || label.includes('historic') || label.includes('architecture')) return getDestinationMedia('jaipur').src
+  return getDestinationMedia('kerala').src
 }
 
 export function TravelImage({ src, alt, className = '', imageClassName = '', loading = 'lazy' }: TravelImageProps) {

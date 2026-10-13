@@ -2,6 +2,9 @@
 
 Photos are served from Unsplash Images and Pexels CDN and remain subject to their respective licenses.
 
+- Experience card photos (hiking trail and Indian meal): Unsplash image CDN photos `photo-1551632811-561732d1e306` and `photo-1547592180-85f173990554` — Unsplash License.
+- Hotel and restaurant search headers: Unsplash image CDN photos `photo-1566073771259-6a8506099945` and `photo-1414235077428-338989a2e8c0` — Unsplash License.
+
 - Kerala houseboat: Unsplash, “Brown wooden boat on water during daytime” (Alappuzha, Kerala), https://unsplash.com/photos/brown-wooden-boat-on-water-during-daytime-N3VzleBhOvk — Unsplash License.
 - Jaipur Hawa Mahal: Unsplash, https://unsplash.com/photos/hawa-mahal-india-LgQoL6eOdHs — Unsplash License.
 - Goa coastline: Pexels photo 28256832, https://www.pexels.com/photo/goa-28256832/ — Pexels License.
@@ -15,7 +18,8 @@ Photos are served from Unsplash Images and Pexels CDN and remain subject to thei
 Attribution is included for traceability. These services may update or remove hosted assets.
 Destination photographs added from Wikimedia Commons:
 
-- Ooty: Saravanan udumalpet, “Ooty Toy Train”, CC BY-SA 4.0. https://commons.wikimedia.org/wiki/File:Ooty_Toy_Train.jpg
+- Ooty: Rainer Halama, “Nilgiri Mountain Railway-WUS05899”, CC BY-SA 4.0. https://commons.wikimedia.org/wiki/File:Nilgiri_Mountain_Railway-WUS05899.jpg
+- Varanasi: Vimalinarc, “View of the ghats at Varanasi”, CC BY 4.0. https://commons.wikimedia.org/wiki/File:View_of_the_ghats_at_Varanasi.jpg
 - Manali: Ajisi, “Rohtang Pass, Himalayas, Manali, Himachal Pradesh, India (2017)”, CC BY-SA 4.0. https://commons.wikimedia.org/wiki/File:Rohtang_Pass,_Himalayas,_Manali,_Himachal_Pradesh,_India_(2017).jpg
 - Hyderabad: Kishor Krishnamoorthi, “Charminar, Hyderabad, India”, CC BY-SA 3.0. https://commons.wikimedia.org/wiki/File:Charminar,_Hyderabad,_India.jpg
 - Amritsar: Ken Wieland, “Sarovar and the Golden Temple”, CC BY-SA 2.0. https://commons.wikimedia.org/wiki/File:Sarovar_and_the_Golden_Temple.jpg

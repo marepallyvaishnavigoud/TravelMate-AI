@@ -55,10 +55,10 @@ export function Navbar() {
   }
 
   const dropdown = (menu: 'discover' | 'plan' | 'account', label: string, Icon: typeof Compass, items: typeof discoveryLinks) => <div className="relative" key={menu}>
-    <button type="button" aria-haspopup="true" aria-expanded={activeMenu === menu} onClick={() => toggleMenu(menu)} className={`inline-flex min-h-10 items-center gap-1.5 rounded-lg px-3 text-[13px] font-medium transition-colors hover:bg-white/[0.05] hover:text-white ${activeMenu === menu ? 'text-white' : 'text-slate-300'}`}>
+    <button type="button" aria-haspopup="true" aria-expanded={activeMenu === menu} onClick={() => toggleMenu(menu)} className={`inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-[13px] font-medium transition-all hover:bg-white/[0.06] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200/60 ${activeMenu === menu ? 'bg-white/[0.07] text-white' : 'text-slate-300'}`}>
       <Icon size={15} aria-hidden="true"/>{label}<ChevronDown size={14} className={`transition-transform ${activeMenu === menu ? 'rotate-180' : ''}`}/>
     </button>
-    {activeMenu === menu && <div className={`absolute ${menu === 'account' ? 'right-0' : 'left-0'} top-full z-50 mt-2 w-56 rounded-xl border border-white/[0.1] bg-[#0B1120] p-2 shadow-xl shadow-black/30`} role="group" aria-label={`${label} links`}>
+    {activeMenu === menu && <div className={`absolute ${menu === 'account' ? 'right-0' : 'left-0'} top-full z-50 mt-3 w-60 rounded-2xl border border-white/[0.1] bg-[#0b1220]/[.98] p-2.5 shadow-[0_20px_60px_rgba(0,0,0,.55)] ring-1 ring-black/20 backdrop-blur-2xl`} role="group" aria-label={`${label} links`}>
       {items.map(({ label: itemLabel, href, icon: ItemIcon }) => <Link key={href} to={href} onClick={closeMenus} className={linkStyle(false)}><ItemIcon size={15} aria-hidden="true"/>{itemLabel}</Link>)}
       {menu === 'account' && <button type="button" onClick={() => void signOut()} className="mt-2 flex min-h-10 w-full items-center gap-2 rounded-lg border-t border-white/[0.08] px-3 pt-2 text-left text-sm text-slate-400 transition hover:bg-white/[0.05] hover:text-white"><LogOut size={15}/>Log out</button>}
     </div>}
@@ -71,25 +71,26 @@ export function Navbar() {
     { label: 'Profile', href: '/profile', icon: UserRound },
   ]
 
-  return <header ref={headerRef} className={`sticky top-0 z-40 border-b transition-colors duration-300 ${isScrolled ? 'border-white/[0.09] bg-[#030712]/95 shadow-lg shadow-black/10 backdrop-blur-xl' : 'border-white/[0.06] bg-[#030712]/90 backdrop-blur-md'}`}>
-    <Container className="flex min-h-[68px] items-center justify-between gap-3 py-2 sm:min-h-[74px] sm:gap-5">
-      <Link to="/" aria-label="TravelMate AI home" onClick={closeMenus} className="inline-flex shrink-0 items-center gap-2.5 rounded-md">
-        <span className="grid size-9 place-items-center rounded-xl border border-indigo-300/20 bg-indigo-400/10 text-indigo-200"><Plane size={17} aria-hidden="true"/></span>
-        <span className="whitespace-nowrap text-[15px] font-semibold tracking-tight text-white">TravelMate<span className="text-slate-400"> AI</span></span>
+  return <header ref={headerRef} className={`sticky top-0 z-40 border-b transition-all duration-300 ${isScrolled ? 'border-white/[0.1] bg-[#050a14]/90 shadow-[0_12px_40px_rgba(0,0,0,.24)] backdrop-blur-2xl' : 'border-white/[0.07] bg-[#050a14]/75 backdrop-blur-xl'}`}>
+    <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-200/40 to-transparent"/>
+    <Container className="flex min-h-[72px] items-center justify-between gap-3 py-2 sm:min-h-[78px] sm:gap-5">
+      <Link to="/" aria-label="TravelMate AI home" onClick={closeMenus} className="group inline-flex shrink-0 items-center gap-3 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-200/70">
+        <span className="relative grid size-10 place-items-center rounded-[15px] border border-indigo-200/20 bg-gradient-to-br from-indigo-300/20 via-indigo-400/10 to-cyan-200/[0.06] text-indigo-100 shadow-[inset_0_1px_0_rgba(255,255,255,.12),0_5px_20px_rgba(99,102,241,.12)] transition group-hover:border-cyan-100/40 group-hover:text-cyan-100"><Plane size={18} aria-hidden="true"/><span className="absolute -bottom-1 -right-1 size-2 rounded-full border border-[#080e1a] bg-cyan-200"/></span>
+        <span className="flex flex-col whitespace-nowrap text-[15px] font-semibold leading-none tracking-tight text-white">TravelMate<span className="mt-1.5 text-[9px] font-semibold uppercase tracking-[.23em] text-slate-400"><span className="text-cyan-200">AI</span> · YOUR NEXT JOURNEY</span></span>
       </Link>
 
-      <nav aria-label="Main navigation" className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex xl:gap-2">
-        <Link to="/explore" className="rounded-lg px-3 py-2 text-[13px] font-medium text-slate-300 transition-colors hover:text-white">Explore</Link>
+      <nav aria-label="Main navigation" className="hidden min-w-0 flex-1 items-center justify-center gap-1 rounded-2xl border border-white/[0.055] bg-white/[0.025] p-1 lg:flex xl:gap-1.5">
+        <Link to="/explore" className="rounded-xl px-3.5 py-2.5 text-[13px] font-medium text-slate-300 transition-all hover:bg-white/[0.06] hover:text-white">Explore</Link>
         {dropdown('plan', 'Plan', Plane, planningLinks)}
         {dropdown('discover', 'Discover', Compass, discoveryLinks)}
-        {user && <Link to="/assistant" className="inline-flex min-h-10 items-center gap-1.5 rounded-lg px-3 text-[13px] font-medium text-slate-300 transition-colors hover:text-white"><Bot size={15}/>Assistant</Link>}
+        {user && <Link to="/assistant" className="inline-flex min-h-10 items-center gap-2 rounded-xl px-3 text-[13px] font-medium text-slate-300 transition-all hover:bg-white/[0.06] hover:text-white"><Bot size={15} className="text-cyan-200"/>Assistant</Link>}
       </nav>
 
       <div className="hidden shrink-0 items-center gap-2 lg:flex">
         {user ? dropdown('account', 'My Travel', UserRound, accountLinks) : <><Link to="/login" className="rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:text-white">Log in</Link><Link to="/register" className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-indigo-500 px-4 text-xs font-semibold text-white shadow-[0_8px_30px_rgba(79,70,229,0.24)] transition hover:bg-indigo-400">Get Started <span aria-hidden="true">↗</span></Link></>}
       </div>
 
-      <button type="button" aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={isOpen} aria-controls="mobile-navigation" onClick={() => { setActiveMenu(null); setIsOpen((open) => !open) }} className="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 text-slate-200 transition hover:bg-white/[0.06] focus-visible:outline lg:hidden">{isOpen ? <X size={19}/> : <Menu size={19}/>}</button>
+      <button type="button" aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={isOpen} aria-controls="mobile-navigation" onClick={() => { setActiveMenu(null); setIsOpen((open) => !open) }} className="grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.035] text-slate-200 transition hover:border-cyan-200/25 hover:bg-white/[0.08] focus-visible:outline lg:hidden">{isOpen ? <X size={19}/> : <Menu size={19}/>}</button>
     </Container>
 
     {isOpen && <nav id="mobile-navigation" aria-label="Mobile navigation" className="border-t border-white/[0.07] bg-[#080e1a] px-5 py-4 lg:hidden"><div className="mx-auto grid max-w-7xl gap-5 sm:grid-cols-2">

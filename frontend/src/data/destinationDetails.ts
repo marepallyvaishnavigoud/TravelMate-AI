@@ -12,10 +12,26 @@ export type HotelPreview = { name: string; area: string; rating: number; priceEs
 export type RestaurantPreview = { name: string; cuisine: string; area: string; rating: number; priceLevel: string; image: string; alt: string }
 export type DestinationDetailsData = { overview: string; info: DestinationInfo; activities: Activity[]; places: Place[]; foods: LocalFood[]; tips: TravelTip[]; gallery: GalleryImage[]; videos: VideoItem[]; hotels: HotelPreview[]; restaurants: RestaurantPreview[]; nearbyPlaces: string[] }
 
-const image = (file: string) => destinationMedia[file]?.src ?? `/images/${file}.svg`
+const photo = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`
+const categoryPhotos: Record<string, string> = {
+  church: destinationMedia.goa.src,
+  heritage: destinationMedia.jaipur.src,
+  nature: destinationMedia.munnar.src,
+  viewpoint: destinationMedia.manali.src,
+  market: photo('photo-1533900298318-6b8da08a523e'),
+  food: photo('photo-1547592180-85f173990554'),
+  'food-curry': photo('photo-1565557623262-b51c2513a641'),
+  'food-dessert': photo('photo-1488477181946-6428a0291777'),
+  'food-snack': photo('photo-1601050690597-df0568f70950'),
+}
+const image = (file: string) => destinationMedia[file]?.src ?? categoryPhotos[file] ?? getDestinationMedia(file).src
 const media = (place: ExploreDestination): GalleryImage => ({ src: getDestinationMedia(place.id).src, alt: getDestinationMedia(place.id).alt })
-const sampleStayImages = ['/images/stay-heritage.svg', '/images/stay-garden.svg', '/images/stay-riverside.svg']
-const sampleFoodImages = ['/images/food.svg', '/images/food-curry.svg', '/images/food-snack.svg']
+const sampleStayImages = [
+  photo('photo-1566073771259-6a8506099945'),
+  photo('photo-1571896349842-33c89424de2d'),
+  photo('photo-1571896349842-33c89424de2d'),
+]
+const sampleFoodImages = [categoryPhotos.food, categoryPhotos['food-curry'], categoryPhotos['food-snack']]
 const keralaFoodImages = [
   'https://commons.wikimedia.org/wiki/Special:FilePath/Fish_Curry_Kerala.jpg?width=1200',
   'https://commons.wikimedia.org/wiki/Special:FilePath/Sadhya_DSW.jpg?width=1200',
@@ -31,12 +47,12 @@ const guides: Record<string, Partial<DestinationDetailsData>> = {
       { title:'Beach hopping',description:'Spend an easy day discovering the distinct character of Goa’s north and south coast.',category:'Coast',duration:'Half day',image:image('goa'),alt:'Goa coastline and beaches'},
       { title:'Explore Old Goa',description:'Visit historic churches and learn about the region’s layered Portuguese-era heritage.',category:'Heritage',duration:'2–3 hours',image:image('church'),alt:'Portuguese-era church architecture in Old Goa'},
       { title:'Sunset cruise',description:'Take in the changing light along the Mandovi River from the water.',category:'Water',duration:'2 hours',image:image('andaman'),alt:'Illustrated water and sunset'},
-      { title:'Local food trail',description:'Try coastal staples, market snacks and a classic Goan fish curry.',category:'Food',duration:'2–3 hours',image:image('food'),alt:'Illustrated local food'},
+      { title:'Local food trail',description:'Try coastal staples, market snacks and a classic Goan fish curry.',category:'Food',duration:'2–3 hours',image:image('food'),alt:'Indian regional food served at a local table'},
       { title:'Visit a fort',description:'Walk the ramparts and take in broad views over the Arabian Sea.',category:'History',duration:'1–2 hours',image:image('heritage'),alt:'Historic coastal fort in Goa'},
       { title:'Browse a night market',description:'Look for handmade goods, music and casual bites at a seasonal market.',category:'Culture',duration:'Evening',image:image('market'),alt:'Colorful night market in Goa'},
     ],
     places: [
-      {name:'Palolem Beach',description:'A crescent-shaped southern beach with a relaxed, scenic shoreline.',type:'Beach',image:image('goa'),alt:'Illustrated beach in Goa'},
+      {name:'Palolem Beach',description:'A crescent-shaped southern beach with a relaxed, scenic shoreline.',type:'Beach',image:image('goa'),alt:'Goa coastline and beach'},
       {name:'Fort Aguada',description:'A coastal fort with wide views and a history dating to the 17th century.',type:'Heritage',image:image('heritage'),alt:'Historic coastal fort in Goa'},
       {name:'Basilica of Bom Jesus',description:'A landmark church and UNESCO-listed part of Old Goa’s historic center.',type:'Architecture',image:image('church'),alt:'Historic church architecture in Old Goa'},
       {name:'Dudhsagar Falls',description:'A dramatic waterfall set in the forested Western Ghats.',type:'Nature',image:image('nature'),alt:'Waterfall among the forested Western Ghats'},
@@ -85,7 +101,7 @@ export function getDestinationDetails(place: ExploreDestination): DestinationDet
     {title:'Save local contacts',description:'Keep your accommodation details and essential local numbers accessible.',icon:'phone'},
   ]
   const gallery = [media(place)]
-  const hotels: HotelPreview[] = ['The Heritage House','Garden View Stay','Riverside Retreat'].map((name,index)=>({name,area:place.city,rating:[4.7,4.5,4.6][index],priceEstimate:['₹3,500','₹2,800','₹4,200'][index],image:sampleStayImages[index],alt:`Illustration of a ${name.toLowerCase()} near ${place.city}`}))
+  const hotels: HotelPreview[] = ['The Heritage House','Garden View Stay','Riverside Retreat'].map((name,index)=>({name,area:place.city,rating:[4.7,4.5,4.6][index],priceEstimate:['₹3,500','₹2,800','₹4,200'][index],image:sampleStayImages[index],alt:`Hotel and guest accommodation near ${place.city}`}))
   const restaurants: RestaurantPreview[] = ['Local Table','The Spice Courtyard','Market Lane Café'].map((name,index)=>({name,cuisine:index===0?`${place.state} cuisine`:'Regional & Indian',area:place.city,rating:[4.6,4.4,4.5][index],priceLevel:['₹₹','₹','₹₹'][index],image:localFoodImage(place,index),alt:`${place.state} food served at a sample restaurant in ${place.city}`}))
   return {overview:guide.overview ?? `${place.description} Discover the character of ${place.city} and the surrounding ${place.state} region through its landscapes, local food and everyday culture.`,info,activities,places,foods,tips,gallery,videos:[{title:`A visual introduction to ${place.name}`,description:'Video previews will appear here when approved destination footage is available.',duration:'Coming soon'}],hotels,restaurants,nearbyPlaces:guide.nearbyPlaces ?? [place.city,`Around ${place.state}`,'Regional viewpoint','Local market']}
 }
