@@ -37,8 +37,15 @@ type GooglePlace = {
 
 function apiKey(): string {
   const key = process.env.GOOGLE_PLACES_API_KEY
-  if (!key) throw new AppError(503, 'Places are temporarily unavailable. Please try again.')
+  if (!key) throw new AppError(503, 'Nearby place search is not configured. Add GOOGLE_PLACES_API_KEY to backend/.env and restart the backend.')
   return key
+}
+
+function providerResponseError(status: number): AppError {
+  if (status === 401 || status === 403) return new AppError(503, 'Google Places rejected the server request. Check that Places API (New) is enabled and the backend key is allowed to use it.')
+  if (status === 429) return new AppError(503, 'Google Places quota or rate limit reached. Check Google Cloud quotas and billing, then try again later.')
+  if (status === 400) return new AppError(400, 'Google Places rejected the search parameters. Check the backend log for the provider error.')
+  return new AppError(502, 'Google Places is temporarily unavailable. Check the backend log and try again.')
 }
 
 function normalize(photo: GooglePhoto): PlacePhoto | null {
@@ -95,9 +102,7 @@ async function googleRequest<T>(url: string, body: unknown, fields: string, stag
   }
   if (!response.ok) {
     console.warn('[places] Google Places returned an unsuccessful response.', { stage, status: response.status })
-    if (response.status === 400) throw new AppError(400, 'Check the place search and try again.')
-    if (response.status === 401 || response.status === 403 || response.status === 429) throw new AppError(503, 'Places are temporarily unavailable. Please try again.')
-    throw new AppError(502, 'Places are temporarily unavailable. Please try again.')
+    throw providerResponseError(response.status)
   }
   try { return await response.json() as T }
   catch {
@@ -150,10 +155,8 @@ export class GooglePlacesProvider implements PlacesProvider {
     }
     if (!response.ok) {
       console.warn('[places] Google Place Details returned an unsuccessful response.', { status: response.status })
-      if (response.status === 400) throw new AppError(400, 'Invalid place ID.')
       if (response.status === 404) throw new AppError(404, 'Place not found.')
-      if (response.status === 401 || response.status === 403 || response.status === 429) throw new AppError(503, 'Places are temporarily unavailable. Please try again.')
-      throw new AppError(502, 'Places are temporarily unavailable. Please try again.')
+      throw providerResponseError(response.status)
     }
     let item: GooglePlace
     try { item = await response.json() as GooglePlace }

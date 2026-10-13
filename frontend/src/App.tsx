@@ -17,6 +17,7 @@ import { HotelsPage, RestaurantsPage } from './pages/Places/PlacesPages'
 import { ExpenseCalculator } from './pages/Expenses/ExpenseCalculator'
 import { AssistantPage } from './pages/Assistant/AssistantPage'
 import { WeatherPage } from './pages/Weather/WeatherPage'
+import { LiveExplorePage } from './pages/LiveExplore/LiveExplorePage'
 
 function App() {
   return <AuthProvider><BrowserRouter><AppLayout><Routes>
@@ -25,6 +26,7 @@ function App() {
     <Route path="/destination/:id" element={<DestinationDetails />} />
     <Route path="/hotels" element={<HotelsPage />} />
     <Route path="/restaurants" element={<RestaurantsPage />} />
+    <Route path="/live-explore" element={<ProtectedRoute><LiveExplorePage /></ProtectedRoute>} />
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

@@ -10,6 +10,7 @@ const links = [
   { label: 'Destinations', href: '/explore#destinations' },
   { label: 'Plan a Trip', href: '/trip-planner' },
   { label: 'Weather', href: '/weather' },
+  { label: 'Live Explore', href: '/live-explore' },
   { label: 'Hotels', href: '/hotels' },
   { label: 'Restaurants', href: '/restaurants' },
 ]
