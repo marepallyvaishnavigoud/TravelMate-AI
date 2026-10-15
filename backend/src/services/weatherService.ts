@@ -143,10 +143,15 @@ function parseForecast(raw: unknown, location: ResolvedLocation): WeatherRespons
     const min = numberAt(daily.temperature_2m_min, index)
     const windMax = numberAt(daily.wind_speed_10m_max, index)
     const precipitation = numberAt(daily.precipitation_probability_max, index)
-    if (typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(Date.parse(`${date}T00:00:00Z`)) || code === null || !Number.isInteger(code) || code < 0 || code > 99 || max === null || min === null || min > max || windMax === null || windMax < 0 || precipitation !== null && (precipitation < 0 || precipitation > 100)) {
-      throw new AppError(502, 'The weather source returned an invalid daily forecast.')
+    const validDate = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) && Number.isFinite(Date.parse(`${date}T00:00:00Z`))
+    if (!validDate) continue
+    if (code === null || !Number.isInteger(code) || code < 0 || code > 99 || max === null || min === null || min > max || windMax === null || windMax < 0 || precipitation !== null && (precipitation < 0 || precipitation > 100)) {
+      continue
     }
     forecast.push({ date, weatherCode: code, condition: describeWeatherCode(code), temperatureMaxC: max, temperatureMinC: min, precipitationProbabilityMax: precipitation, windSpeedMaxKmh: windMax })
+  }
+  if (forecast.length === 0) {
+    throw new AppError(502, 'The weather source returned an invalid daily forecast.')
   }
   return {
     location: { name: location.name, country: location.country, admin1: location.admin1, latitude: finiteNumber(raw.latitude) ? raw.latitude : location.latitude, longitude: finiteNumber(raw.longitude) ? raw.longitude : location.longitude, timezone },

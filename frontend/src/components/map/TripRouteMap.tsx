@@ -11,23 +11,39 @@ export function TripRouteMap({ route }: { route: SupportedRoute }) {
   const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN
 
   useEffect(() => {
-    if (!token) {
-      if (import.meta.env.DEV) console.warn('[TripRouteMap] VITE_MAPBOX_PUBLIC_TOKEN is not configured.')
-      return
-    }
     if (!containerRef.current || mapRef.current) return
-    mapboxgl.accessToken = token
+    if (token) {
+      mapboxgl.accessToken = token
+    }
+
+    const baseStyle = token
+      ? 'mapbox://styles/mapbox/dark-v11'
+      : ({
+          version: 8,
+          name: 'OpenStreetMap fallback',
+          sources: {
+            osm: {
+              type: 'raster',
+              tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+              tileSize: 256,
+              attribution: '&copy; OpenStreetMap contributors',
+            },
+          },
+          layers: [{ id: 'osm', type: 'raster', source: 'osm', minzoom: 0, maxzoom: 19 }],
+        } as mapboxgl.StyleSpecification)
+
     const map = new mapboxgl.Map({
       container: containerRef.current,
-      style: 'mapbox://styles/mapbox/dark-v11',
+      style: baseStyle,
       center: [route.origin.longitude, route.origin.latitude],
       zoom: 5,
       attributionControl: true,
     })
+
     mapRef.current = map
     map.on('error', (event) => {
       const status = 'status' in event.error ? event.error.status : undefined
-      if (import.meta.env.DEV) console.warn('[TripRouteMap] Mapbox map resource error.', { status })
+      if (import.meta.env.DEV) console.warn('[TripRouteMap] Map resource error.', { status })
     })
     map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
     map.on('load', () => {
@@ -60,6 +76,5 @@ export function TripRouteMap({ route }: { route: SupportedRoute }) {
     return () => observer.disconnect()
   }, [])
 
-  if (!token) return <div className="grid min-h-[320px] place-items-center rounded-xl bg-[#070d19] p-6 text-center text-sm text-slate-400">{import.meta.env.DEV ? 'Map tiles are not configured. Add VITE_MAPBOX_PUBLIC_TOKEN to frontend/.env and restart the frontend.' : 'Interactive map is temporarily unavailable.'}</div>
   return <div ref={containerRef} aria-label={`Driving route from ${route.origin.name} to ${route.destination.name}`} className="h-[360px] min-h-[320px] w-full overflow-hidden rounded-xl sm:h-[420px]" />
 }

@@ -89,6 +89,28 @@ test('provider timeouts and outages map to useful errors', async () => {
   } finally { globalThis.fetch = originalFetch }
 })
 
+test('partial missing daily values are skipped instead of rejecting the whole forecast', async () => {
+  const service = createWeatherService({
+    requestJson: async (url) => url.hostname === 'geocoding-api.open-meteo.com'
+      ? { results: [place] }
+      : {
+          ...forecast,
+          daily: {
+            ...forecast.daily,
+            time: dates,
+            weather_code: [...dates.slice(0, -1).map(() => 2), null],
+            temperature_2m_max: [...dates.slice(0, -1).map(() => 32), null],
+            temperature_2m_min: [...dates.slice(0, -1).map(() => 23), null],
+            precipitation_probability_max: [...dates.slice(0, -1).map(() => 20), 10],
+            wind_speed_10m_max: [...dates.slice(0, -1).map(() => 18), 14],
+          },
+        },
+  })
+  const result = await service.getWeather({ location: 'Delhi' })
+  assert.equal(result.forecast.length, 15)
+  assert.equal(result.forecast[result.forecast.length - 1].date, dates[14])
+})
+
 test('invalid provider responses fail closed rather than creating weather values', async () => {
   const service = createWeatherService({ requestJson: async (url) => url.hostname === 'geocoding-api.open-meteo.com' ? { results: [place] } : { ...forecast, current: { ...forecast.current, temperature_2m: null } } })
   await assert.rejects(() => service.getWeather({ location: 'Delhi' }), (error) => error instanceof AppError && error.statusCode === 502)
