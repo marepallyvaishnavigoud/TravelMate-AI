@@ -26,12 +26,12 @@ export const getTripItineraryController: RequestHandler = async (request, respon
 }
 
 function currentUserId(request: Parameters<RequestHandler>[0]): string {
-  if (!request.authUser) throw new AppError(401, 'Authentication is required.')
-  return request.authUser.userId
+  if (!(request as any).authUser) throw new AppError(401, 'Authentication is required.')
+  return (request as any).authUser.userId
 }
 
 function tripId(request: Parameters<RequestHandler>[0]): string {
-  const id = request.params.id
+  const id = (request as any).params.id
   if (typeof id !== 'string') throw new AppError(404, 'Trip not found.')
   return id
 }
@@ -130,3 +130,5 @@ export const generateTripItineraryController: RequestHandler = async (request, r
     data: { itinerary },
   })
 }
+const authUser = (req as any).authUser;
+const params = (req as any).params;

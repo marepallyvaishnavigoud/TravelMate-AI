@@ -4,12 +4,12 @@ import { checkSavedDestination, getDashboardSummary, getSavedDestinations, remov
 import { destinationIdSchema, saveDestinationSchema } from '../validators/savedDestinationValidators.js'
 
 function authId(request: Parameters<RequestHandler>[0]): string {
-  if (!request.authUser) throw new AppError(401, 'Authentication is required.')
-  return request.authUser.userId
+  if (!(request as any).authUser) throw new AppError(401, 'Authentication is required.')
+  return (request as any).authUser.userId
 }
 
 function destinationId(request: Parameters<RequestHandler>[0]): string {
-  return destinationIdSchema.parse(request.params.destinationId)
+  return destinationIdSchema.parse((request as any).params.destinationId)
 }
 
 export const createSavedDestination: RequestHandler = async (request, response) => {
@@ -32,3 +32,5 @@ export const dashboardSummary: RequestHandler = async (request, response) => {
   const data = await getDashboardSummary(authId(request))
   response.json({ success: true, data })
 }
+const authUser = (req as any).authUser;
+const params = (req as any).params;
