@@ -15,11 +15,29 @@ import { isJwtConfigured } from './utils/jwt.js'
 
 const app = express()
 const port = Number(process.env.PORT ?? 5000)
-const clientUrl = process.env.CLIENT_URL ?? 'http://localhost:5173'
+const allowedOrigins = [
+  'https://travel-mate-ai-1sok.vercel.app',
+  'https://travel-mate-ai-1sok-flax.vercel.app',
+  process.env.FRONTEND_URL,
+  process.env.CORS_ORIGIN,
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+].filter((origin): origin is string => Boolean(origin))
 
 app.disable('x-powered-by')
 app.use(helmet())
-app.use(cors({ origin: clientUrl, methods: ['GET','POST','PUT','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization'] }))
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}))
 app.use(express.json({ limit: '10kb' }))
 
 app.get('/api/health', (_request, response) => {
