@@ -130,5 +130,3 @@ export const generateTripItineraryController: RequestHandler = async (request, r
     data: { itinerary },
   })
 }
-const authUser = (req as any).authUser;
-const params = (req as any).params;

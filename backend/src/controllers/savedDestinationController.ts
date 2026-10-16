@@ -32,5 +32,3 @@ export const dashboardSummary: RequestHandler = async (request, response) => {
   const data = await getDashboardSummary(authId(request))
   response.json({ success: true, data })
 }
-const authUser = (req as any).authUser;
-const params = (req as any).params;

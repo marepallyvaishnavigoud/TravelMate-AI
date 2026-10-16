@@ -26,5 +26,3 @@ export const deleteExpensesController: RequestHandler = async (request, response
   await deleteTripExpenses(currentUserId(request), tripId(request))
   response.json({ success: true, message: 'Expenses deleted.' })
 }
-const authUser = (req as any).authUser;
-const params = (req as any).params;
