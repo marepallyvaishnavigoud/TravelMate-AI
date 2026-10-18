@@ -61,12 +61,17 @@ export function TripRouteMap({ route }: { route: SupportedRoute }) {
         map.addLayer({
           id: 'trip-route-casing', type: 'line', source: 'trip-route',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: { 'line-color': '#0f172a', 'line-width': 9, 'line-opacity': 0.9 },
+          paint: { 'line-color': '#0f172a', 'line-width': 16, 'line-opacity': 0.9 },
+        })
+        map.addLayer({
+          id: 'trip-route-halo', type: 'line', source: 'trip-route',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#ffffff', 'line-width': 11, 'line-opacity': 0.95 },
         })
         map.addLayer({
           id: 'trip-route-line', type: 'line', source: 'trip-route',
           layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: { 'line-color': '#22d3ee', 'line-width': 5, 'line-opacity': 1 },
+          paint: { 'line-color': '#06b6d4', 'line-width': 7, 'line-opacity': 1 },
         })
       }
       const originCoordinates: [number, number] = [route.origin.longitude, route.origin.latitude]
