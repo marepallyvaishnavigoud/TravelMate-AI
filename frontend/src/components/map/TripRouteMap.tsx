@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { LngLatBounds, Map, Marker, NavigationControl, Popup } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { TripRoute } from '../../services/tripService'
+import { streetMapStyle } from './streetMapStyle'
 
 type SupportedRoute = Extract<TripRoute, { supported: true }>
 
@@ -38,7 +39,7 @@ export function TripRouteMap({ route }: { route: SupportedRoute }) {
       : null
     const map = new Map({
       container: containerRef.current,
-      style: 'https://tiles.openfreemap.org/styles/dark',
+      style: streetMapStyle,
       center: [route.origin.longitude, route.origin.latitude],
       zoom: 5,
       attributionControl: true,

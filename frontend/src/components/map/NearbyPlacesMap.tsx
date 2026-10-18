@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Map, Marker, NavigationControl, Popup } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { streetMapStyle } from './streetMapStyle'
 
 type Position = { latitude: number; longitude: number }
 
@@ -13,7 +14,7 @@ export function NearbyPlacesMap({ position }: { position: Position }) {
     if (!containerRef.current || mapRef.current) return
     const map = new Map({
       container: containerRef.current,
-      style: 'https://tiles.openfreemap.org/styles/dark',
+      style: streetMapStyle,
       center: [position.longitude, position.latitude],
       zoom: 12,
       attributionControl: true,
