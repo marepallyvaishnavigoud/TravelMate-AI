@@ -1,33 +1,19 @@
 import { useEffect, useRef } from 'react'
-import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
+import { LngLatBounds, Map, Marker, NavigationControl, Popup } from 'maplibre-gl'
+import 'maplibre-gl/dist/maplibre-gl.css'
 import type { TripRoute } from '../../services/tripService'
 
 type SupportedRoute = Extract<TripRoute, { supported: true }>
 
 export function TripRouteMap({ route }: { route: SupportedRoute }) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<mapboxgl.Map | null>(null)
+  const mapRef = useRef<Map | null>(null)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
-    const baseStyle: mapboxgl.StyleSpecification = {
-      version: 8,
-      name: 'Street map',
-      sources: {
-        streets: {
-          type: 'raster',
-          tiles: ['https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        },
-      },
-      layers: [{ id: 'streets', type: 'raster', source: 'streets', minzoom: 0, maxzoom: 19 }],
-    }
-
-    const map = new mapboxgl.Map({
+    const map = new Map({
       container: containerRef.current,
-      style: baseStyle,
+      style: 'https://tiles.openfreemap.org/styles/liberty',
       center: [route.origin.longitude, route.origin.latitude],
       zoom: 5,
       attributionControl: true,
@@ -38,7 +24,7 @@ export function TripRouteMap({ route }: { route: SupportedRoute }) {
       const status = 'status' in event.error ? event.error.status : undefined
       if (import.meta.env.DEV) console.warn('[TripRouteMap] Map resource error.', { status })
     })
-    map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right')
+    map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.on('load', () => {
       if (mapRef.current !== map) return
       map.addSource('trip-route', {
@@ -52,17 +38,17 @@ export function TripRouteMap({ route }: { route: SupportedRoute }) {
       })
       const originCoordinates: [number, number] = [route.origin.longitude, route.origin.latitude]
       const destinationCoordinates: [number, number] = [route.destination.longitude, route.destination.latitude]
-      new mapboxgl.Marker({ color: '#0891b2' }).setLngLat(originCoordinates).addTo(map)
-      new mapboxgl.Popup({ closeButton: false, closeOnClick: false, offset: 28 })
+      new Marker({ color: '#0891b2' }).setLngLat(originCoordinates).addTo(map)
+      new Popup({ className: 'travelmate-map-popup', closeButton: false, closeOnClick: false, offset: 28 })
         .setLngLat(originCoordinates)
         .setText(`Start: ${route.origin.name}`)
         .addTo(map)
-      new mapboxgl.Marker({ color: '#4f46e5' }).setLngLat(destinationCoordinates).addTo(map)
-      new mapboxgl.Popup({ closeButton: false, closeOnClick: false, offset: 28 })
+      new Marker({ color: '#4f46e5' }).setLngLat(destinationCoordinates).addTo(map)
+      new Popup({ className: 'travelmate-map-popup', closeButton: false, closeOnClick: false, offset: 28 })
         .setLngLat(destinationCoordinates)
         .setText(`Destination: ${route.destination.name}`)
         .addTo(map)
-      const bounds = new mapboxgl.LngLatBounds()
+      const bounds = new LngLatBounds()
       route.geometry.coordinates.forEach((coordinate) => bounds.extend(coordinate))
       map.fitBounds(bounds, { padding: 48, maxZoom: 10, duration: 0 })
     })
