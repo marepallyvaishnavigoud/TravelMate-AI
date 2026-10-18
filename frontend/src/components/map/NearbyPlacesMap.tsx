@@ -13,7 +13,7 @@ export function NearbyPlacesMap({ position }: { position: Position }) {
     if (!containerRef.current || mapRef.current) return
     const map = new Map({
       container: containerRef.current,
-      style: 'https://tiles.openfreemap.org/styles/liberty',
+      style: 'https://tiles.openfreemap.org/styles/dark',
       center: [position.longitude, position.latitude],
       zoom: 12,
       attributionControl: true,
